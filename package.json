@@ -2,7 +2,7 @@
   "name": "checkup-financiero",
   "version": "0.1.0",
   "type": "module",
-  "homepage": "https://liamdondisch.github.io/checkup-financiero",
+  "homepage": "https://dondischl12.github.io/checkup-financiero",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

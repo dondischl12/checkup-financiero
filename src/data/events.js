@@ -1,0 +1,42 @@
+export const events = [
+  {
+    id: 'presupuesto-familiar',
+    title: 'Taller de presupuesto familiar',
+    date: '2026-06-18',
+    format: 'Presencial',
+    category: 'Presupuesto',
+    description: 'Sesion practica para ordenar gastos del hogar, metas y prioridades familiares.',
+  },
+  {
+    id: 'deuda-credito',
+    title: 'Webinar de deuda y credito',
+    date: '2026-06-25',
+    format: 'Online',
+    category: 'Deuda',
+    description: 'Herramientas para entender saldos, intereses y planes de pago responsables.',
+  },
+  {
+    id: 'fondo-emergencia',
+    title: 'Sesión: construye tu fondo de emergencia',
+    date: '2026-07-02',
+    format: 'Online',
+    category: 'Ahorro',
+    description: 'Cómo empezar una reserva realista y sostenerla sin presión.',
+  },
+  {
+    id: 'jovenes-finanzas',
+    title: 'Plática para jóvenes: primeros pasos financieros',
+    date: '2026-07-09',
+    format: 'Presencial',
+    category: 'Jóvenes',
+    description: 'Fundamentos de presupuesto, ahorro y credito para primeras decisiones.',
+  },
+  {
+    id: 'cafe-comunitario',
+    title: 'Café comunitario de bienestar financiero',
+    date: '2026-07-16',
+    format: 'Presencial',
+    category: 'Familia',
+    description: 'Conversacion guiada sobre bienestar, familia y educacion financiera.',
+  },
+]

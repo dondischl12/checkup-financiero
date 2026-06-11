@@ -1,13 +1,10 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { BarChart2, BookOpen, CalendarDays, ClipboardCheck, Home, LockKeyhole, ShieldCheck } from 'lucide-react'
+import { Building2, Home, LockKeyhole, UserRound } from 'lucide-react'
 
 const navItems = [
   ['/', 'Inicio', Home],
-  ['/checkup', 'Checkup', ClipboardCheck],
-  ['/dashboard', 'Mi panel', BarChart2],
-  ['/learn', 'Aprender', BookOpen],
-  ['/events', 'Eventos', CalendarDays],
-  ['/admin', 'Consejo', ShieldCheck],
+  ['/login', 'User sign in', UserRound],
+  ['/admin-login', 'Admin sign in', Building2],
   ['/privacy', 'Privacidad', LockKeyhole],
 ]
 

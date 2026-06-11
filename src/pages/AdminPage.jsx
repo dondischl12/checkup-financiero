@@ -32,9 +32,10 @@ export default function AdminPage() {
         <div className="flex gap-3">
           <ShieldAlert className="shrink-0 text-amber-700" />
           <div>
-            <h1 className="text-xl font-bold text-slate-950">Panel para consejo Katalyst</h1>
+            <h1 className="text-xl font-bold text-slate-950">Corporate analysis para consejo Katalyst</h1>
             <p className="mt-1 leading-7 text-slate-700">
-              Este panel muestra métricas agregadas. Los datos financieros individuales permanecen privados.
+              Este panel muestra métricas agregadas para priorizar programas, detectar necesidades y medir impacto.
+              Los datos financieros individuales permanecen privados.
             </p>
           </div>
         </div>

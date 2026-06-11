@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/shared/Layout'
+import AdminLoginPage from './pages/AdminLoginPage'
 import AdminPage from './pages/AdminPage'
 import CheckupPage from './pages/CheckupPage'
 import DashboardPage from './pages/DashboardPage'
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<LandingPage />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="admin-login" element={<AdminLoginPage />} />
         <Route path="onboarding" element={<OnboardingPage />} />
         <Route path="checkup" element={<CheckupPage />} />
         <Route path="dashboard" element={<DashboardPage />} />

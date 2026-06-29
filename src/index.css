@@ -3,7 +3,129 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --katalyst-cream: #fbfaf6;
+    --katalyst-paper: #ffffff;
+    --katalyst-navy: #071832;
+    --katalyst-ink: #17233b;
+    --katalyst-muted: #667085;
+    --katalyst-line: #e7e1d6;
+    --katalyst-sage: #e7f0e4;
+    --katalyst-sage-strong: #2f855a;
+    --katalyst-gold: #d9a441;
+  }
+
   body {
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 84% 10%, rgba(47, 133, 90, 0.12), transparent 28rem),
+      linear-gradient(180deg, #fffdfa 0%, var(--katalyst-cream) 46%, #f7f3eb 100%);
+    color: var(--katalyst-ink);
+  }
+
+  .font-serif {
+    font-family: Georgia, "Times New Roman", serif;
+  }
+}
+
+@layer components {
+  .k-page {
+    @apply space-y-7;
+  }
+
+  .k-shell {
+    @apply rounded-lg border bg-white/90 shadow-xl backdrop-blur;
+    border-color: rgba(231, 225, 214, 0.9);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  }
+
+  .k-card {
+    @apply rounded-lg border bg-white shadow-sm;
+    border-color: var(--katalyst-line);
+  }
+
+  .k-soft-card {
+    @apply rounded-lg border shadow-sm;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(247, 250, 244, 0.86));
+    border-color: rgba(231, 225, 214, 0.9);
+  }
+
+  .k-eyebrow {
+    @apply text-sm font-bold;
+    color: var(--katalyst-sage-strong);
+  }
+
+  .k-display {
+    @apply font-serif font-bold leading-none;
+    color: var(--katalyst-navy);
+    letter-spacing: 0;
+  }
+
+  .k-copy {
+    @apply leading-8;
+    color: var(--katalyst-muted);
+  }
+
+  .k-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-bold text-white transition;
+    background: var(--katalyst-navy);
+    box-shadow: 0 14px 28px rgba(7, 24, 50, 0.18);
+  }
+
+  .k-primary:hover {
+    background: #102544;
+  }
+
+  .k-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border bg-white px-5 py-3 font-bold transition;
+    border-color: var(--katalyst-line);
+    color: var(--katalyst-navy);
+  }
+
+  .k-secondary:hover {
+    background: #f7f5ef;
+  }
+
+  .k-icon-tile {
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-lg;
+    background: var(--katalyst-sage);
+    color: var(--katalyst-sage-strong);
+  }
+
+  .k-landscape {
+    @apply pointer-events-none absolute inset-x-0 bottom-0 overflow-hidden;
+    height: 58%;
+  }
+
+  .k-landscape::before,
+  .k-landscape::after {
+    content: "";
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    border-radius: 50% 50% 0 0;
+  }
+
+  .k-landscape::before {
+    bottom: -18%;
+    height: 70%;
+    background: linear-gradient(180deg, rgba(47, 133, 90, 0.18), rgba(47, 133, 90, 0.34));
+  }
+
+  .k-landscape::after {
+    bottom: 8%;
+    left: 10%;
+    height: 58%;
+    background: linear-gradient(180deg, rgba(116, 142, 114, 0.16), rgba(116, 142, 114, 0.28));
+  }
+
+  .k-score-ring {
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    --score-deg: 245deg;
+    background:
+      radial-gradient(circle at center, white 0 58%, transparent 59%),
+      conic-gradient(from -115deg, var(--katalyst-sage-strong) 0deg var(--score-deg), #edf1e8 var(--score-deg) 360deg);
   }
 }

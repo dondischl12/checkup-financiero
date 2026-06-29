@@ -198,18 +198,12 @@ function buildChartEntries(entries, latest, profile) {
         score: entry.scoreResult?.score || calculateFinancialScore(entry, profile).score,
         income: entry.monthlyIncome,
         expenses: entry.monthlyExpenses,
-      }))
+          }))
   }
-  // Demo filler: creates believable history for charts when the user has only one real checkup.
-  return [-4, -3, -2, -1, 0].map((offset) => {
-    const date = new Date()
-    date.setMonth(date.getMonth() + offset)
-    const drift = offset * -2
-    return {
-      monthLabel: date.toLocaleDateString('es-MX', { month: 'short' }),
-      score: Math.max(40, Math.min(95, (latest.scoreResult?.score || 72) + drift)),
-      income: Math.round(latest.monthlyIncome * (1 + offset * 0.01)),
-      expenses: Math.round(latest.monthlyExpenses * (1 - offset * 0.015)),
-    }
-  })
+  return [{
+    monthLabel: new Date(latest.createdAt || Date.now()).toLocaleDateString('es-MX', { month: 'short' }),
+    score: latest.scoreResult?.score || calculateFinancialScore(latest, profile).score,
+    income: latest.monthlyIncome,
+    expenses: latest.monthlyExpenses,
+  }]
 }

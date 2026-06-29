@@ -17,7 +17,7 @@ export default function LearnPage() {
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
           <Stat label="XP total" value={`${totalXp} XP`} icon={<Zap size={20} />} />
           <Stat label="Nivel actual" value={level} icon={<Award size={20} />} />
-          <Stat label="Racha demo" value={`${Math.max(1, completed + 2)} dias`} icon={<Zap size={20} />} />
+          <Stat label="Módulos completados" value={`${completed}`} icon={<Zap size={20} />} />
         </div>
       </section>
 

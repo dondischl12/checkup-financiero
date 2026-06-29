@@ -1,219 +1,298 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Send } from 'lucide-react'
-import { calculateFinancialScore } from '../utils/scoring'
-import { getDemoUser, getProfile, readStorage, saveHelpRequest, STORAGE_KEYS, writeStorage } from '../utils/storage'
+import { ArrowLeft, ArrowRight, Check, CircleDollarSign, Info, LockKeyhole, ShieldCheck } from 'lucide-react'
+import { checkupQuestionBank } from '../data/checkupQuestionBank'
+import { buildSnapshot } from '../lib/financialCalculations'
+import { readStorage, saveHelpRequest, saveSnapshot, STORAGE_KEYS, writeStorage } from '../utils/storage'
 
-const steps = [
-  'Ingresos y gastos',
-  'Ahorro',
-  'Deuda',
-  'Fondo de emergencia',
-  'Protección familiar',
-  'Bienestar financiero',
-  'Contacto con Katalyst',
-]
+const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 
-const initial = {
-  monthlyIncome: 65000,
-  monthlyExpenses: 52000,
-  monthlySavings: 7000,
-  tracksExpenses: 'sometimes',
-  debtComfort: 'manageable',
-  paysCardInFull: 'yes',
-  emergencyFundMonths: '2',
-  hasMedicalInsurance: 'yes',
-  hasLifeInsuranceIfDependents: 'not_sure',
-  financialStress: 3,
-  feelsInControl: 3,
-  wantsKatalystContact: 'no',
-  contactTopic: 'Fondo de emergencia',
-  contactMessage: '',
+const sectionIcons = {
+  profile_household: ShieldCheck,
+  income: CircleDollarSign,
+  housing_home_expenses: CircleDollarSign,
+  children_education: CircleDollarSign,
+  insurance_protection: ShieldCheck,
+  transport_auto: CircleDollarSign,
+  recreation_lifestyle: CircleDollarSign,
+  debt_credit: CircleDollarSign,
+  savings_assets: ShieldCheck,
+  habits_wellbeing: Check,
 }
 
 export default function CheckupPage() {
-  const [step, setStep] = useState(0)
-  const [form, setForm] = useState(initial)
+  const [answers, setAnswers] = useState(() => readStorage('katalyst:checkupDraft', {}))
+  const [sectionIndex, setSectionIndex] = useState(0)
   const navigate = useNavigate()
-  const profile = getProfile()
-  const user = getDemoUser()
-  const progress = Math.round(((step + 1) / steps.length) * 100)
-  const preview = useMemo(() => calculateFinancialScore(form, profile), [form, profile])
+  const sections = useMemo(() => visibleSections(checkupQuestionBank.sections, answers), [answers])
+  const current = sections[sectionIndex] || sections[0]
+  const snapshot = useMemo(() => buildSnapshot(answers), [answers])
+  const progress = Math.round(((sectionIndex + 1) / sections.length) * 100)
 
-  function update(key, value) {
-    setForm((current) => ({ ...current, [key]: value }))
+  function update(id, value) {
+    const next = { ...answers, [id]: value }
+    setAnswers(next)
+    writeStorage('katalyst:checkupDraft', next)
   }
 
-  function submit() {
-    const now = new Date()
-    const entry = {
-      ...form,
-      monthlyIncome: Number(form.monthlyIncome) || 0,
-      monthlyExpenses: Number(form.monthlyExpenses) || 0,
-      monthlySavings: Number(form.monthlySavings) || 0,
-      financialStress: Number(form.financialStress) || 3,
-      feelsInControl: Number(form.feelsInControl) || 3,
-      userId: user?.id || 'demo-user',
-      month: now.getMonth() + 1,
-      year: now.getFullYear(),
-      createdAt: now.toISOString(),
-      scoreResult: calculateFinancialScore(form, profile),
+  function goNext() {
+    if (sectionIndex < sections.length - 1) {
+      setSectionIndex(sectionIndex + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
     }
-    const entries = readStorage(STORAGE_KEYS.checkups, [])
-    const withoutCurrentMonth = entries.filter((item) => !(item.month === entry.month && item.year === entry.year))
-    writeStorage(STORAGE_KEYS.checkups, [entry, ...withoutCurrentMonth])
-
-    if (form.wantsKatalystContact === 'yes') {
+    const finalSnapshot = buildSnapshot(answers)
+    saveSnapshot(finalSnapshot)
+    writeStorage(STORAGE_KEYS.checkups, [
+      {
+        id: `snapshot-${Date.now()}`,
+        createdAt: finalSnapshot.createdAt,
+        month: new Date().getMonth() + 1,
+        year: new Date().getFullYear(),
+        monthlyIncome: finalSnapshot.derivedMetrics.monthlyIncome,
+        monthlyExpenses: finalSnapshot.derivedMetrics.monthlyExpenses,
+        monthlySavings: finalSnapshot.derivedMetrics.monthlySavings,
+        emergencyFundMonths: finalSnapshot.derivedMetrics.emergencyMonths,
+        scoreResult: { score: finalSnapshot.score, label: finalSnapshot.level.label },
+      },
+      ...readStorage(STORAGE_KEYS.checkups, []),
+    ])
+    if (answers.wants_katalyst_contact === 'Quiero que me contacten') {
       saveHelpRequest({
-        topic: form.contactTopic,
-        message: form.contactMessage,
-        user,
-        profile,
+        topic: answers.top_financial_goal || 'Snapshot financiero',
+        message: 'Solicitud voluntaria enviada desde el checkup financiero.',
       })
     }
-    navigate('/dashboard')
+    navigate('/snapshot')
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="mb-6 rounded-lg bg-gradient-to-r from-slate-950 to-emerald-950 p-6 text-white">
-        <p className="text-sm font-semibold text-emerald-200">Checkup mensual</p>
-        <h1 className="mt-2 text-3xl font-bold">Tu salud financiera de este mes</h1>
-        <div className="mt-5 h-2 rounded-full bg-white/20">
-          <div className="h-2 rounded-full bg-emerald-300 transition-all" style={{ width: `${progress}%` }} />
-        </div>
-        <p className="mt-3 text-sm text-slate-200">
-          Paso {step + 1} de {steps.length}: {steps[step]}
-        </p>
-      </div>
+    <div className="mx-auto max-w-7xl">
+      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+        <main className="space-y-7">
+          <Stepper sections={sections} active={sectionIndex} />
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
-        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-xl shadow-slate-100">
-          <StepFields step={step} form={form} update={update} />
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-between">
-            <button
-              onClick={() => setStep((current) => Math.max(0, current - 1))}
-              disabled={step === 0}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-5 py-3 font-semibold text-slate-700 disabled:opacity-40"
-            >
-              <ArrowLeft size={18} /> Anterior
-            </button>
-            {step === steps.length - 1 ? (
+          <section className="grid gap-6 lg:grid-cols-[1fr_0.65fr] lg:items-end">
+            <div>
+              <p className="k-eyebrow">Checkup privado local</p>
+              <h1 className="k-display mt-3 text-5xl leading-tight md:text-6xl">
+                Cuéntenos sobre su situación actual
+              </h1>
+            </div>
+            <p className="k-copy text-lg">
+              Estas respuestas ayudan a construir un panorama financiero claro. Puede omitir una pregunta; su resultado será menos preciso.
+            </p>
+          </section>
+
+          <section className="k-shell p-5">
+            <div className="mb-5 flex items-start justify-between gap-4 border-b border-stone-100 pb-5">
+              <div>
+                <p className="k-eyebrow">Paso {sectionIndex + 1} de {sections.length}</p>
+                <h2 className="k-display mt-1 text-3xl">{current.title}</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{current.purpose}</p>
+              </div>
+              <span className="hidden rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800 sm:inline-flex">
+                {progress}% completo
+              </span>
+            </div>
+
+            <div className="grid gap-4">
+              {current.questions.map((question) => (
+                <QuestionField key={question.id} question={question} value={answers[question.id] ?? ''} onChange={update} />
+              ))}
+            </div>
+
+            <div className="mt-6 flex items-center gap-2 text-sm text-slate-500">
+              <Info size={17} />
+              <span>Puede omitir una pregunta; su resultado será menos preciso.</span>
+            </div>
+
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-between">
               <button
-                onClick={submit}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 font-semibold text-white"
+                type="button"
+                onClick={() => setSectionIndex(Math.max(0, sectionIndex - 1))}
+                disabled={sectionIndex === 0}
+                className="k-secondary disabled:opacity-40"
               >
-                Guardar checkup <Send size={18} />
+                <ArrowLeft size={18} /> Atrás
               </button>
-            ) : (
               <button
-                onClick={() => setStep((current) => Math.min(steps.length - 1, current + 1))}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 font-semibold text-white"
+                type="button"
+                onClick={goNext}
+                className="k-primary px-6"
               >
-                Síguiente <ArrowRight size={18} />
+                {sectionIndex === sections.length - 1 ? 'Ver mi snapshot' : 'Continuar'} <ArrowRight size={18} />
               </button>
-            )}
-          </div>
-        </section>
-        <aside className="rounded-lg border border-emerald-100 bg-emerald-50 p-5">
-          <p className="text-sm font-semibold text-emerald-800">Vista previa privada</p>
-          <p className="mt-3 text-5xl font-bold text-slate-950">{preview.score}</p>
-          <p className="font-semibold text-slate-700">{preview.label}</p>
-          <p className="mt-4 text-sm leading-6 text-slate-600">
-            Este resultado solo aparece en tu panel personal. El panel del consejo usa métricas agregadas y anónimas.
-          </p>
+            </div>
+          </section>
+
+          <section className="grid gap-4 border-t border-stone-200 pt-5 text-sm md:grid-cols-3">
+            <PrivacyPoint icon={<ShieldCheck size={18} />} title="100% confidencial" copy="Sus respuestas se usan únicamente para este snapshot." />
+            <PrivacyPoint icon={<LockKeyhole size={18} />} title="Solo en su dispositivo" copy="No compartimos datos sin su consentimiento." />
+            <PrivacyPoint icon={<Check size={18} />} title="Usted tiene el control" copy="Puede editar o borrar su información local." />
+          </section>
+        </main>
+
+        <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+          <PreviewCard snapshot={snapshot} />
+          <section className="k-soft-card p-5">
+            <div className="k-icon-tile mb-4">
+              <LockKeyhole size={22} />
+            </div>
+            <h2 className="font-bold text-slate-950">Su privacidad es nuestra prioridad</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Sus respuestas permanecen en este dispositivo. No se envían a servidores ni al panel admin en modo invitado.
+            </p>
+          </section>
         </aside>
       </div>
     </div>
   )
 }
 
-function StepFields({ step, form, update }) {
-  const inputClass =
-    'w-full rounded-lg border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100'
-  if (step === 0) {
-    return (
-      <div className="grid gap-5 md:grid-cols-2">
-        <Money label="Ingresos mensuales" value={form.monthlyIncome} onChange={(v) => update('monthlyIncome', v)} />
-        <Money label="Gastos mensuales" value={form.monthlyExpenses} onChange={(v) => update('monthlyExpenses', v)} />
-        <Choice label="Llevas registro de tus gastos" value={form.tracksExpenses} onChange={(v) => update('tracksExpenses', v)} options={[['yes', 'Sí'], ['sometimes', 'A veces'], ['no', 'No']]} />
-      </div>
-    )
-  }
-  if (step === 1) return <Money label="Ahorro mensual" value={form.monthlySavings} onChange={(v) => update('monthlySavings', v)} />
-  if (step === 2) {
-    return (
-      <div className="grid gap-5 md:grid-cols-2">
-        <Choice label="Cómo se siente tu deuda" value={form.debtComfort} onChange={(v) => update('debtComfort', v)} options={[['comfortable', 'Cómoda'], ['manageable', 'Manejable'], ['stressed', 'Estresante'], ['critical', 'Crítica']]} />
-        <Choice label="Pagas tu tarjeta completa" value={form.paysCardInFull} onChange={(v) => update('paysCardInFull', v)} options={[['yes', 'Sí'], ['no', 'No'], ['not_applicable', 'No aplica']]} />
-      </div>
-    )
-  }
-  if (step === 3) return <Choice label="Meses de fondo de emergencia" value={form.emergencyFundMonths} onChange={(v) => update('emergencyFundMonths', v)} options={[['0', '0'], ['1', '1'], ['2', '2'], ['3', '3'], ['6+', '6+']]} />
-  if (step === 4) {
-    return (
-      <div className="grid gap-5 md:grid-cols-2">
-        <Choice label="Seguro de gastos médicos" value={form.hasMedicalInsurance} onChange={(v) => update('hasMedicalInsurance', v)} options={[['yes', 'Sí'], ['no', 'No'], ['not_sure', 'No estoy seguro']]} />
-        <Choice label="Seguro de vida si hay dependientes" value={form.hasLifeInsuranceIfDependents} onChange={(v) => update('hasLifeInsuranceIfDependents', v)} options={[['yes', 'Sí'], ['no', 'No'], ['not_applicable', 'No aplica'], ['not_sure', 'No estoy seguro']]} />
-      </div>
-    )
-  }
-  if (step === 5) {
-    return (
-      <div className="grid gap-5 md:grid-cols-2">
-        <Range label="Estrés financiero" value={form.financialStress} onChange={(v) => update('financialStress', v)} />
-        <Range label="Me siento en control" value={form.feelsInControl} onChange={(v) => update('feelsInControl', v)} />
-      </div>
-    )
-  }
+function PrivacyPoint({ icon, title, copy }) {
   return (
-    <div className="space-y-5">
-      <Choice label="Quieres que Katalyst te contacte" value={form.wantsKatalystContact} onChange={(v) => update('wantsKatalystContact', v)} options={[['no', 'No por ahora'], ['yes', 'Sí, solicitar contacto']]} />
-      <label className="block">
-        <span className="mb-2 block text-sm font-semibold text-slate-700">Tema</span>
-        <select value={form.contactTopic} onChange={(event) => update('contactTopic', event.target.value)} className={inputClass}>
-          {['Fondo de emergencia', 'Deuda y credito', 'Presupuesto', 'Protección familiar', 'Otro'].map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
-      </label>
-      <label className="block">
-        <span className="mb-2 block text-sm font-semibold text-slate-700">Mensaje opcional</span>
-        <textarea value={form.contactMessage} onChange={(event) => update('contactMessage', event.target.value)} rows="4" className={inputClass} />
-      </label>
+    <div className="flex gap-3">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-700">{icon}</span>
+      <span>
+        <span className="block font-bold text-slate-950">{title}</span>
+        <span className="mt-1 block leading-5 text-slate-500">{copy}</span>
+      </span>
     </div>
   )
 }
 
-function Money({ label, value, onChange }) {
+function visibleSections(sections, answers) {
+  return sections.filter((section) => {
+    if (section.id !== 'children_education') return true
+    return Number(answers.children_count || 0) > 0 || Number(answers.dependents_count || 0) > 0
+  })
+}
+
+function Stepper({ sections, active }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-slate-700">{label}</span>
-      <input type="number" min="0" value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" />
+    <div className="overflow-x-auto pb-2">
+      <div className="flex min-w-[760px] items-center">
+        {sections.map((section, index) => {
+          const complete = index < active
+          const activeStep = index === active
+          return (
+            <div key={section.id} className="flex flex-1 items-center">
+              <div className="flex flex-col items-center gap-2">
+                <span className={`grid h-9 w-9 place-items-center rounded-full border text-sm font-bold ${complete ? 'border-emerald-700 bg-emerald-700 text-white' : activeStep ? 'border-emerald-700 bg-emerald-50 text-emerald-800' : 'border-stone-300 bg-white text-slate-500'}`}>
+                  {complete ? <Check size={16} /> : index + 1}
+                </span>
+                <span className={`max-w-24 truncate text-xs font-bold ${activeStep ? 'text-emerald-800' : 'text-slate-500'}`}>{shortTitle(section.title)}</span>
+              </div>
+              {index < sections.length - 1 && <span className={`mx-3 h-px flex-1 ${index < active ? 'bg-emerald-700' : 'bg-stone-200'}`} />}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function shortTitle(title) {
+  return title
+    .replace('Ingresos netos mensuales y extraordinarios', 'Ingresos')
+    .replace('Gastos de casa y vida diaria', 'Gastos')
+    .replace('Hijos, educación y dependientes', 'Dependientes')
+    .replace('Seguros y protección familiar', 'Seguros')
+    .replace('Automóvil y transporte', 'Transporte')
+    .replace('Recreación, vacaciones y gastos personales', 'Estilo de vida')
+    .replace('Deudas, crédito y costos financieros', 'Deuda')
+    .replace('Ahorro, fondo de emergencia e inversión', 'Ahorro')
+    .replace('Hábitos y bienestar financiero', 'Hábitos')
+    .replace('Perfil del hogar', 'Perfil')
+}
+
+function QuestionField({ question, value, onChange }) {
+  const Icon = sectionIcons[question.section] || CircleDollarSign
+  if (question.type === 'single_select') {
+    return (
+      <article className="k-card p-4">
+        <p className="mb-3 font-bold text-slate-950">{question.label}</p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {question.options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onChange(question.id, option)}
+              className={`rounded-lg border px-4 py-3 text-left text-sm font-bold transition ${value === option ? 'border-emerald-600 bg-emerald-50 text-emerald-900 shadow-sm' : 'border-stone-200 bg-stone-50 text-slate-700 hover:bg-white'}`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  return (
+    <label className="k-card grid gap-4 p-4 sm:grid-cols-[72px_1fr_240px] sm:items-center">
+      <span className="k-icon-tile h-16 w-16">
+        <Icon size={26} />
+      </span>
+      <span>
+        <span className="block font-bold text-slate-950">{question.label}</span>
+        <span className="mt-1 block text-sm text-slate-500">
+          {question.frequency === 'annual' || question.frequency === 'annual_or_one_time'
+            ? 'Capture el monto anual; lo convertimos a equivalente mensual.'
+            : question.type === 'currency'
+              ? 'Monto mensual aproximado en MXN.'
+              : 'Respuesta numérica.'}
+        </span>
+      </span>
+      <span className="flex items-center overflow-hidden rounded-lg border border-stone-300 bg-white focus-within:border-emerald-600 focus-within:ring-4 focus-within:ring-emerald-100">
+        {question.type === 'currency' && <span className="border-r border-stone-200 px-3 text-sm font-bold text-slate-500">MXN</span>}
+        <input
+          type="number"
+          min={question.min ?? 0}
+          max={question.max}
+          value={value}
+          onChange={(event) => onChange(question.id, event.target.value)}
+          className="w-full bg-transparent px-4 py-3 text-right font-bold text-slate-950 outline-none"
+          placeholder={question.type === 'currency' ? '$0' : '0'}
+        />
+      </span>
     </label>
   )
 }
 
-function Choice({ label, value, onChange, options }) {
+function PreviewCard({ snapshot }) {
+  const metrics = snapshot.derivedMetrics
+  const degrees = `${Math.round((Math.max(0, Math.min(100, snapshot.score)) / 100) * 360)}deg`
+  const rows = [
+    ['Ingresos', metrics.monthlyIncome, metrics.monthlyIncome > 0 ? 'Bien' : 'Pendiente'],
+    ['Gastos', metrics.monthlyExpenses, metrics.expenseRatio <= 0.85 ? 'Bien' : 'Revisar'],
+    ['Deuda', metrics.debtPayments, metrics.debtToIncome <= 0.3 ? 'Bien' : 'Atención'],
+    ['Ahorro', metrics.monthlySavings, metrics.savingsRate >= 0.15 ? 'Bien' : 'Regular'],
+    ['Fondo', metrics.emergencyFund, metrics.emergencyMonths >= 3 ? 'Bien' : 'Regular'],
+  ]
   return (
-    <div>
-      <p className="mb-2 text-sm font-semibold text-slate-700">{label}</p>
-      <div className="grid gap-2">
-        {options.map(([id, text]) => (
-          <button key={id} type="button" onClick={() => onChange(id)} className={`rounded-lg border px-4 py-3 text-left font-semibold transition ${value === id ? 'border-emerald-500 bg-emerald-50 text-emerald-900' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
-            {text}
-          </button>
+    <section className="k-shell p-6">
+      <p className="text-sm font-bold text-slate-600">Vista previa de su snapshot</p>
+      <div className="my-6 text-center">
+        <div className="k-score-ring mx-auto h-40 w-40" style={{ '--score-deg': degrees }}>
+          <div>
+            <p className="text-5xl font-bold text-slate-950">{snapshot.score}</p>
+            <p className="text-sm font-bold text-slate-500">/100</p>
+          </div>
+        </div>
+        <p className="mt-3 font-bold text-emerald-800">{snapshot.level.label}</p>
+      </div>
+      <div className="divide-y divide-stone-100">
+        {rows.map(([label, value, status]) => (
+          <div key={label} className="flex items-center justify-between py-3 text-sm">
+            <span className="font-bold text-slate-700">{label}</span>
+            <span className="text-right">
+              <span className="block font-bold text-slate-950">{money.format(value)}</span>
+              <span className="text-xs font-bold text-emerald-700">{status}</span>
+            </span>
+          </div>
         ))}
       </div>
-    </div>
-  )
-}
-
-function Range({ label, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-slate-700">{label}: {value}</span>
-      <input type="range" min="1" max="5" value={value} onChange={(event) => onChange(event.target.value)} className="w-full accent-emerald-600" />
-    </label>
+    </section>
   )
 }

@@ -27,7 +27,6 @@ export default function LearnModulePage() {
         started: true,
         completed: passed,
         score,
-        xp: passed ? module.xpReward : current[module.id]?.xp || 0,
         completedAt: passed ? new Date().toISOString() : current[module.id]?.completedAt,
       },
     })
@@ -77,7 +76,7 @@ export default function LearnModulePage() {
             <p className="font-bold text-slate-950">
               {result.passed ? `Badge ganado: ${module.badge}` : 'Buen intento. Puedes repasar y reenviar.'}
             </p>
-            <p className="text-sm text-slate-600">Resultado: {result.score}% · {result.passed ? `${module.xpReward} XP otorgados` : 'XP pendiente'}</p>
+            <p className="text-sm text-slate-600">Resultado: {result.score}% · {result.passed ? 'Módulo completado' : 'Repaso recomendado'}</p>
             <Link to="/learn" className="mt-4 inline-flex font-bold text-emerald-700">Volver a academia</Link>
           </div>
         )}

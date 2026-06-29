@@ -227,7 +227,7 @@ function drawRecurringBreakdown(ctx, snapshot) {
 function drawHistory(ctx, history) {
   sectionTitle(ctx, 'Historial real')
   if (history.length <= 1) {
-    note(ctx, 'Este es el primer snapshot guardado. La evolución se mostrará únicamente cuando existan checkups posteriores; no se generan datos simulados.')
+    note(ctx, 'Para comparar progreso en el tiempo, cree una cuenta opcional y guarde snapshots posteriores con consentimiento. No se generan datos históricos simulados.')
     return
   }
   drawTable(ctx, ['Fecha', 'Score', 'Ingresos', 'Gastos', 'Ahorro'], history.map((item) => [

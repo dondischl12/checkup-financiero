@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ShieldCheck, Trash2 } from 'lucide-react'
-import { clearDemoData } from '../utils/storage'
+import { clearLocalData } from '../utils/storage'
 
 const bullets = [
   'La información financiera individual es privada.',
@@ -9,14 +9,14 @@ const bullets = [
   'Las solicitudes de contacto se envían con nombre y correo para que Katalyst pueda responder.',
   'La plataforma no conecta cuentas bancarias.',
   'Las recomendaciones son educativas y no sustituyen asesoría financiera profesional.',
-  'En este demo, los datos se guardan localmente en el navegador.',
+  'En esta versión local-first, los datos se guardan en el navegador.',
 ]
 
 export default function PrivacyPage() {
   const navigate = useNavigate()
 
   function clear() {
-    clearDemoData()
+    clearLocalData()
     navigate('/')
   }
 
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
         ))}
       </div>
       <button onClick={clear} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-slate-950 px-6 py-3 font-semibold text-white">
-        <Trash2 size={18} /> Borrar datos del demo
+        <Trash2 size={18} /> Borrar datos locales
       </button>
     </div>
   )

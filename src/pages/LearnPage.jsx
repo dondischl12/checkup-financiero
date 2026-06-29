@@ -1,23 +1,27 @@
 import { Link } from 'react-router-dom'
-import { Award, Lock, Zap } from 'lucide-react'
+import { Award, BookOpen, Clock, Lock } from 'lucide-react'
 import { learningModules } from '../data/learningModules'
 import { readStorage, STORAGE_KEYS } from '../utils/storage'
 
 export default function LearnPage() {
   const progress = readStorage(STORAGE_KEYS.learning, {})
-  const totalXp = Object.values(progress).reduce((sum, item) => sum + (item.xp || 0), 0)
   const completed = Object.values(progress).filter((item) => item.completed).length
-  const level = totalXp >= 400 ? 'Explorador avanzado' : totalXp >= 180 ? 'Constructor de habitos' : 'Inicio consciente'
+  const started = Object.values(progress).filter((item) => item.started).length
+  const totalMinutes = learningModules.reduce((sum, module) => sum + module.estimatedMinutes, 0)
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-lg bg-gradient-to-r from-slate-950 via-emerald-950 to-slate-900 p-6 text-white">
-        <p className="text-sm font-semibold text-emerald-200">Academia financiera</p>
-        <h1 className="mt-2 text-3xl font-bold">Aprende en pasos cortos y medibles</h1>
+    <div className="k-page">
+      <section className="k-shell relative overflow-hidden bg-[#071832] p-6 text-white">
+        <div className="k-landscape opacity-20" />
+        <div className="relative z-10">
+        <p className="text-sm font-bold text-emerald-200">Academia financiera</p>
+        <h1 className="mt-2 font-serif text-4xl font-bold">Aprenda a su ritmo</h1>
+        <p className="mt-3 max-w-2xl leading-7 text-slate-300">Módulos prácticos conectados a su snapshot financiero, diseñados para avanzar con claridad y sin presión.</p>
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <Stat label="XP total" value={`${totalXp} XP`} icon={<Zap size={20} />} />
-          <Stat label="Nivel actual" value={level} icon={<Award size={20} />} />
-          <Stat label="Módulos completados" value={`${completed}`} icon={<Zap size={20} />} />
+          <Stat label="Módulos iniciados" value={`${started}`} icon={<BookOpen size={20} />} />
+          <Stat label="Módulos completados" value={`${completed}`} icon={<Award size={20} />} />
+          <Stat label="Tiempo total estimado" value={`${totalMinutes} min`} icon={<Clock size={20} />} />
+        </div>
         </div>
       </section>
 
@@ -26,7 +30,7 @@ export default function LearnPage() {
           const item = progress[module.id]
           const isSoftLocked = index > completed + 2
           return (
-            <article key={module.id} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <article key={module.id} className="k-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">{module.badge}</span>
                 {isSoftLocked ? <Lock size={18} className="text-slate-300" /> : <Award size={18} className="text-emerald-600" />}
@@ -36,12 +40,12 @@ export default function LearnPage() {
               <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-slate-500">
                 <span className="rounded-full bg-slate-100 px-2 py-1">{module.level}</span>
                 <span className="rounded-full bg-slate-100 px-2 py-1">{module.estimatedMinutes} min</span>
-                <span className="rounded-full bg-slate-100 px-2 py-1">{module.xpReward} XP</span>
+                <span className="rounded-full bg-slate-100 px-2 py-1">{module.quizQuestions.length || 2} actividades</span>
               </div>
               <div className="mt-5 h-2 rounded-full bg-slate-100">
                 <div className="h-2 rounded-full bg-emerald-500" style={{ width: item?.completed ? '100%' : item?.started ? '45%' : '0%' }} />
               </div>
-              <Link to={`/learn/${module.id}`} className="mt-5 inline-flex w-full justify-center rounded-lg bg-slate-950 px-4 py-3 font-semibold text-white">
+              <Link to={`/learn/${module.id}`} className="k-primary mt-5 inline-flex w-full">
                 {item?.completed ? 'Repasar' : item?.started ? 'Continuar' : 'Empezar'}
               </Link>
             </article>

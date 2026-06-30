@@ -141,7 +141,7 @@ export default function CheckupPage() {
             </div>
             <h2 className="font-bold text-slate-950">Su privacidad es nuestra prioridad</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Sus respuestas permanecen en este dispositivo. No se envían a servidores ni al panel admin en modo invitado.
+              Sus respuestas permanecen en este dispositivo mientras usa el modo invitado.
             </p>
           </section>
         </aside>

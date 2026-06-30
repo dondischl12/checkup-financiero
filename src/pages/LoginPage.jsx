@@ -52,7 +52,7 @@ export default function LoginPage() {
         <div className="mb-6">
           <h2 className="k-display text-3xl">Crear cuenta</h2>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            Esta versión guarda la cuenta localmente. Supabase se conectará después para historial real entre dispositivos.
+            La cuenta es opcional y sirve para preparar historial, progreso y seguimiento cuando usted decida guardarlos.
           </p>
         </div>
         <label className="mb-4 block">

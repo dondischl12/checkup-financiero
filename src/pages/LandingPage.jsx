@@ -4,7 +4,6 @@ import {
   BarChart3,
   BookOpen,
   ClipboardCheck,
-  Database,
   Download,
   FileText,
   LockKeyhole,
@@ -123,16 +122,16 @@ export default function LandingPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.12fr_0.88fr] lg:items-center">
-        <BrowserFrame title="Aggregate admin insights" image={screenshot('admin')} />
+        <BrowserFrame title="Action plan" image={screenshot('action')} />
         <div className="space-y-5">
-          <h2 className="k-display text-4xl md:text-5xl">Preparado para producción.</h2>
+          <h2 className="k-display text-4xl md:text-5xl">Acompañamiento después del reporte.</h2>
           <p className="k-copy text-lg">
-            La arquitectura deja claro qué vive localmente, qué puede sincronizarse con Supabase y qué ve un admin.
+            Después del snapshot, la experiencia ayuda a convertir claridad financiera en pasos pequeños, recursos y seguimiento opcional.
           </p>
           <div className="grid gap-3">
-            <ArchitectureLine title="Invitado" copy="Checkup, score y PDF sin backend obligatorio." />
-            <ArchitectureLine title="Cuenta opcional" copy="Historial real cuando la persona decide guardar progreso." />
-            <ArchitectureLine title="Panel admin" copy="Métricas agregadas para programas comunitarios." />
+            <ArchitectureLine title="Modo invitado" copy="Complete el checkup y descargue su PDF sin crear cuenta." />
+            <ArchitectureLine title="Progreso opcional" copy="Guarde snapshots solo si quiere comparar avances en el tiempo." />
+            <ArchitectureLine title="Recursos Katalyst" copy="Encuentre módulos, eventos y próximos pasos conectados a su resultado." />
           </div>
         </div>
       </section>
@@ -172,7 +171,7 @@ function HeroMockup() {
           </article>
           <article className="k-panel p-5">
             <p className="text-sm font-bold text-slate-500">Capacidad demostrada</p>
-            <p className="mt-1 text-lg font-bold text-slate-950">Score, PDF, módulos y admin agregado.</p>
+            <p className="mt-1 text-lg font-bold text-slate-950">Score, PDF, módulos y próximos pasos.</p>
           </article>
         </div>
       </div>
@@ -201,9 +200,9 @@ function TrustBento() {
         <p className="mt-2 text-sm leading-6 text-slate-600">Métricas, explicación y acciones concretas.</p>
       </article>
       <article className="k-card k-hover-lift p-6 lg:col-span-2">
-        <Database className="text-emerald-700" size={24} />
-        <h3 className="mt-5 font-bold text-slate-950">Admin agregado</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-600">Los programas ven tendencias comunitarias, no respuestas financieras individuales.</p>
+        <BookOpen className="text-emerald-700" size={24} />
+        <h3 className="mt-5 font-bold text-slate-950">Recursos conectados</h3>
+        <p className="mt-2 text-sm leading-6 text-slate-600">El resultado recomienda módulos y acciones según las áreas que más conviene atender.</p>
       </article>
       <article className="k-card k-hover-lift p-6 lg:col-span-2">
         <UserRound className="text-emerald-700" size={24} />

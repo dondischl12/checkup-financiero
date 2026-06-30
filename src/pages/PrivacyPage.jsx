@@ -4,8 +4,8 @@ import { clearLocalData } from '../utils/storage'
 
 const bullets = [
   'La información financiera individual es privada.',
-  'En producción habrá autenticación segura, 2FA y políticas de acceso.',
-  'El consejo solo ve métricas agregadas/anónimas.',
+  'La cuenta es opcional y requiere consentimiento para guardar progreso.',
+  'Cualquier aprendizaje comunitario debe manejarse de forma agregada y anónima.',
   'Las solicitudes de contacto se envían con nombre y correo para que Katalyst pueda responder.',
   'La plataforma no conecta cuentas bancarias.',
   'Las recomendaciones son educativas y no sustituyen asesoría financiera profesional.',

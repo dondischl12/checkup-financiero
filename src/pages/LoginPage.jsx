@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react'
-import { getLastSnapshot, STORAGE_KEYS, writeStorage } from '../utils/storage'
+import { getLastSnapshot, persistSnapshotForAccount, STORAGE_KEYS, writeStorage } from '../utils/storage'
 
 export default function LoginPage() {
   const [name, setName] = useState('')
@@ -20,6 +20,7 @@ export default function LoginPage() {
       createdAt: new Date().toISOString(),
       snapshotSaveConsent: consent,
     })
+    if (consent && snapshot) persistSnapshotForAccount(snapshot)
     navigate(snapshot ? '/snapshot' : '/checkup')
   }
 
@@ -91,7 +92,7 @@ export default function LoginPage() {
             className="mt-1 h-4 w-4 accent-emerald-700"
           />
           <span>
-            Deseo guardar mi snapshot en mi cuenta cuando el historial esté activo. Entiendo que el modo invitado mantiene mis respuestas en este dispositivo.
+            Deseo guardar mi snapshot en mi cuenta cuando el historial esté activo. Entiendo que el modo invitado sólo mantiene mis respuestas temporalmente en esta pestaña.
           </span>
         </label>
         <div className="flex flex-col gap-3 sm:flex-row">

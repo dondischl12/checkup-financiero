@@ -1,6 +1,7 @@
 export const STORAGE_KEYS = {
   localAccount: 'katalyst_local_account',
   profile: 'katalyst_user_profile',
+  checkupDraft: 'katalyst:checkupDraft',
   checkups: 'katalyst_checkup_entries',
   lastSnapshot: 'katalyst:lastSnapshot',
   snapshots: 'katalyst:snapshots',
@@ -8,6 +9,10 @@ export const STORAGE_KEYS = {
   helpRequests: 'katalyst_help_requests',
   eventInterest: 'katalyst_event_interest',
 }
+
+let guestCheckupDraft = {}
+let guestLastSnapshot = null
+let guestSnapshotHistory = []
 
 export function readStorage(key, fallback) {
   try {
@@ -32,6 +37,7 @@ export function getProfile() {
 }
 
 export function getCheckups() {
+  if (!hasSnapshotSaveConsent()) return []
   return readStorage(STORAGE_KEYS.checkups, [])
 }
 
@@ -41,10 +47,17 @@ export function getLatestCheckup() {
 }
 
 export function getLastSnapshot() {
-  return readStorage(STORAGE_KEYS.lastSnapshot, null)
+  if (!hasSnapshotSaveConsent()) return guestLastSnapshot
+  return readStorage(STORAGE_KEYS.lastSnapshot, null) || guestLastSnapshot
 }
 
-export function saveSnapshot(snapshot) {
+export function saveSnapshot(snapshot, { persist = hasSnapshotSaveConsent() } = {}) {
+  if (!persist) {
+    guestLastSnapshot = snapshot
+    guestSnapshotHistory = [snapshot]
+    return snapshot
+  }
+
   writeStorage(STORAGE_KEYS.lastSnapshot, snapshot)
   const snapshots = readStorage(STORAGE_KEYS.snapshots, [])
   const next = [snapshot, ...snapshots.filter((item) => item.createdAt !== snapshot.createdAt)].slice(0, 24)
@@ -53,9 +66,35 @@ export function saveSnapshot(snapshot) {
 }
 
 export function getSnapshotHistory() {
-  return readStorage(STORAGE_KEYS.snapshots, [])
+  const snapshots = hasSnapshotSaveConsent() ? readStorage(STORAGE_KEYS.snapshots, []) : guestSnapshotHistory
+  return snapshots
     .slice()
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+}
+
+export function readCheckupDraft() {
+  return hasSnapshotSaveConsent() ? readStorage(STORAGE_KEYS.checkupDraft, {}) : guestCheckupDraft
+}
+
+export function writeCheckupDraft(value) {
+  if (hasSnapshotSaveConsent()) writeStorage(STORAGE_KEYS.checkupDraft, value)
+  else guestCheckupDraft = value
+  return value
+}
+
+export function saveCheckupEntry(entry) {
+  if (!hasSnapshotSaveConsent()) return null
+  const entries = readStorage(STORAGE_KEYS.checkups, [])
+  return writeStorage(STORAGE_KEYS.checkups, [entry, ...entries])
+}
+
+export function persistSnapshotForAccount(snapshot = guestLastSnapshot) {
+  if (!snapshot) return null
+  return saveSnapshot(snapshot, { persist: true })
+}
+
+export function hasSnapshotSaveConsent() {
+  return Boolean(getLocalAccount()?.snapshotSaveConsent)
 }
 
 export function saveHelpRequest({ topic, message = '', user = getLocalAccount(), profile = getProfile() }) {
@@ -78,4 +117,7 @@ export function saveHelpRequest({ topic, message = '', user = getLocalAccount(),
 
 export function clearLocalData() {
   Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key))
+  guestCheckupDraft = {}
+  guestLastSnapshot = null
+  guestSnapshotHistory = []
 }

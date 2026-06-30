@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check, CircleDollarSign, Info, LockKeyhole, ShieldCheck } from 'lucide-react'
 import { checkupQuestionBank } from '../data/checkupQuestionBank'
 import { buildSnapshot } from '../lib/financialCalculations'
-import { readStorage, saveHelpRequest, saveSnapshot, STORAGE_KEYS, writeStorage } from '../utils/storage'
+import { readCheckupDraft, saveCheckupEntry, saveHelpRequest, saveSnapshot, writeCheckupDraft } from '../utils/storage'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 
@@ -21,7 +21,7 @@ const sectionIcons = {
 }
 
 export default function CheckupPage() {
-  const [answers, setAnswers] = useState(() => readStorage('katalyst:checkupDraft', {}))
+  const [answers, setAnswers] = useState(() => readCheckupDraft())
   const [sectionIndex, setSectionIndex] = useState(0)
   const navigate = useNavigate()
   const sections = useMemo(() => visibleSections(checkupQuestionBank.sections, answers), [answers])
@@ -32,7 +32,7 @@ export default function CheckupPage() {
   function update(id, value) {
     const next = { ...answers, [id]: value }
     setAnswers(next)
-    writeStorage('katalyst:checkupDraft', next)
+    writeCheckupDraft(next)
   }
 
   function goNext() {
@@ -43,20 +43,17 @@ export default function CheckupPage() {
     }
     const finalSnapshot = buildSnapshot(answers)
     saveSnapshot(finalSnapshot)
-    writeStorage(STORAGE_KEYS.checkups, [
-      {
-        id: `snapshot-${Date.now()}`,
-        createdAt: finalSnapshot.createdAt,
-        month: new Date().getMonth() + 1,
-        year: new Date().getFullYear(),
-        monthlyIncome: finalSnapshot.derivedMetrics.monthlyIncome,
-        monthlyExpenses: finalSnapshot.derivedMetrics.monthlyExpenses,
-        monthlySavings: finalSnapshot.derivedMetrics.monthlySavings,
-        emergencyFundMonths: finalSnapshot.derivedMetrics.emergencyMonths,
-        scoreResult: { score: finalSnapshot.score, label: finalSnapshot.level.label },
-      },
-      ...readStorage(STORAGE_KEYS.checkups, []),
-    ])
+    saveCheckupEntry({
+      id: `snapshot-${Date.now()}`,
+      createdAt: finalSnapshot.createdAt,
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      monthlyIncome: finalSnapshot.derivedMetrics.monthlyIncome,
+      monthlyExpenses: finalSnapshot.derivedMetrics.monthlyExpenses,
+      monthlySavings: finalSnapshot.derivedMetrics.monthlySavings,
+      emergencyFundMonths: finalSnapshot.derivedMetrics.emergencyMonths,
+      scoreResult: { score: finalSnapshot.score, label: finalSnapshot.level.label },
+    })
     if (answers.wants_katalyst_contact === 'Quiero que me contacten') {
       saveHelpRequest({
         topic: answers.top_financial_goal || 'Snapshot financiero',

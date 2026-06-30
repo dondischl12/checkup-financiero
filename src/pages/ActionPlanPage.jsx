@@ -17,14 +17,14 @@ export default function ActionPlanPage() {
       </section>
 
       <section>
-        <h1 className="font-serif text-5xl font-bold text-slate-950">Su plan de acción</h1>
+        <h1 className="k-display text-5xl text-slate-950">Su plan de acción</h1>
         <p className="mt-3 max-w-2xl text-lg leading-8 text-slate-600">Un plan personalizado de 30 días para avanzar hacia sus metas con pasos pequeños y sostenibles.</p>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
-        <article className="rounded-lg border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="k-card p-6">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="font-serif text-2xl font-bold text-slate-950">Roadmap de 30 días</h2>
+            <h2 className="k-display text-2xl text-slate-950">Roadmap de 30 días</h2>
             <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-800">25% progreso</span>
           </div>
           <div className="grid gap-4 md:grid-cols-4">
@@ -39,7 +39,7 @@ export default function ActionPlanPage() {
             ))}
           </div>
         </article>
-        <article className="rounded-lg border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="k-card p-6">
           <h2 className="mb-4 font-bold text-slate-950">Objetivos prioritarios</h2>
           {snapshot.actionPlan.slice(0, 3).map((item, index) => (
             <div key={item.week} className="mb-4 flex gap-3">
@@ -61,7 +61,7 @@ export default function ActionPlanPage() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
-        <article className="rounded-lg border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="k-card p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-bold text-slate-950">Recursos y módulos recomendados</h2>
             <Link to="/learn" className="text-sm font-bold text-emerald-800">Ver todos</Link>
@@ -75,7 +75,7 @@ export default function ActionPlanPage() {
             ))}
           </div>
         </article>
-        <article className="rounded-lg border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="k-card p-6">
           <h2 className="mb-4 font-bold text-slate-950">Eventos Katalyst sugeridos</h2>
           {events.slice(0, 3).map((event) => (
             <div key={event.id} className="border-t border-stone-100 py-3 first:border-t-0">
@@ -91,7 +91,7 @@ export default function ActionPlanPage() {
 
 function Stat({ icon, label, value }) {
   return (
-    <article className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+    <article className="k-card p-5">
       <div className="mb-3 grid h-12 w-12 place-items-center rounded-lg bg-emerald-50 text-emerald-700">{icon}</div>
       <p className="text-sm font-bold text-slate-500">{label}</p>
       <p className="mt-1 text-2xl font-bold text-slate-950">{value}</p>

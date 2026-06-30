@@ -17,15 +17,18 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-lg bg-gradient-to-r from-slate-950 to-emerald-950 p-6 text-white">
-        <CalendarDays className="mb-4 text-emerald-200" />
-        <h1 className="text-3xl font-bold">Eventos y recursos Katalyst</h1>
-        <p className="mt-3 text-slate-300">Talleres y conversaciones para aprender en comunidad.</p>
+    <div className="k-page">
+      <section className="k-shell relative overflow-hidden bg-[#071832] p-6 text-white">
+        <div className="k-landscape opacity-20" />
+        <div className="relative z-10">
+          <CalendarDays className="mb-4 text-emerald-200" />
+          <h1 className="k-display text-4xl text-white">Eventos y recursos Katalyst</h1>
+          <p className="mt-3 max-w-2xl text-slate-300">Talleres y conversaciones para aprender en comunidad, conectados a los temas que aparecen en su snapshot.</p>
+        </div>
       </section>
       <div className="flex flex-wrap gap-2">
         {filters.map((item) => (
-          <button key={item} onClick={() => setFilter(item)} className={`rounded-full px-4 py-2 text-sm font-bold ${filter === item ? 'bg-slate-950 text-white' : 'bg-white text-slate-700 border border-slate-200'}`}>
+          <button type="button" key={item} onClick={() => setFilter(item)} aria-pressed={filter === item} className={`k-focus rounded-full px-4 py-2 text-sm font-bold ${filter === item ? 'bg-slate-950 text-white' : 'border border-slate-200 bg-white text-slate-700'}`}>
             {item}
           </button>
         ))}
@@ -34,7 +37,7 @@ export default function EventsPage() {
         {visible.map((event) => {
           const selected = interest.includes(event.id)
           return (
-            <article key={event.id} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <article key={event.id} className="k-card p-5">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">{event.category}</span>
                 <span className="text-sm font-semibold text-slate-500">{event.format}</span>
@@ -44,7 +47,7 @@ export default function EventsPage() {
                 {new Date(event.date).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
               <p className="mt-3 min-h-[72px] leading-7 text-slate-600">{event.description}</p>
-              <button onClick={() => markInterest(event.id)} className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 font-semibold ${selected ? 'bg-emerald-50 text-emerald-800' : 'bg-slate-950 text-white'}`}>
+              <button type="button" onClick={() => markInterest(event.id)} className={`k-focus mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 font-semibold ${selected ? 'bg-emerald-50 text-emerald-800' : 'bg-slate-950 text-white'}`}>
                 {selected && <CheckCircle2 size={18} />} {selected ? 'Interés registrado' : 'Me interesa'}
               </button>
             </article>

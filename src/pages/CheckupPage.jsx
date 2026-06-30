@@ -219,7 +219,8 @@ function QuestionField({ question, value, onChange }) {
               key={option}
               type="button"
               onClick={() => onChange(question.id, option)}
-              className={`rounded-lg border px-4 py-3 text-left text-sm font-bold transition ${value === option ? 'border-emerald-600 bg-emerald-50 text-emerald-900 shadow-sm' : 'border-stone-200 bg-stone-50 text-slate-700 hover:bg-white'}`}
+              aria-pressed={value === option}
+              className={`k-focus rounded-lg border px-4 py-3 text-left text-sm font-bold transition ${value === option ? 'border-emerald-600 bg-emerald-50 text-emerald-900 shadow-sm' : 'border-stone-200 bg-stone-50 text-slate-700 hover:bg-white'}`}
             >
               {option}
             </button>
@@ -247,6 +248,8 @@ function QuestionField({ question, value, onChange }) {
       <span className="flex items-center overflow-hidden rounded-lg border border-stone-300 bg-white focus-within:border-emerald-600 focus-within:ring-4 focus-within:ring-emerald-100">
         {question.type === 'currency' && <span className="border-r border-stone-200 px-3 text-sm font-bold text-slate-500">MXN</span>}
         <input
+          id={question.id}
+          name={question.id}
           type="number"
           min={question.min ?? 0}
           max={question.max}

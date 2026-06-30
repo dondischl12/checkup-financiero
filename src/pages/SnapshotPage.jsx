@@ -13,7 +13,7 @@ export default function SnapshotPage() {
   if (!snapshot) {
     return (
       <div className="mx-auto max-w-2xl rounded-lg border border-stone-200 bg-white p-10 text-center shadow-xl shadow-stone-200">
-        <h1 className="font-serif text-4xl font-bold text-slate-950">Aún no tiene snapshot</h1>
+        <h1 className="k-display text-4xl text-slate-950">Aún no tiene snapshot</h1>
         <p className="mt-3 text-slate-600">Complete el checkup privado para generar su score, reporte y plan de acción.</p>
         <Link to="/checkup" className="mt-6 inline-flex rounded-lg bg-slate-950 px-6 py-3 font-bold text-white">
           Hacer mi checkup
@@ -124,7 +124,7 @@ export default function SnapshotPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-serif text-2xl font-bold text-slate-950">Módulos recomendados para usted</h2>
+          <h2 className="k-display text-2xl text-slate-950">Módulos recomendados para usted</h2>
           <Link to="/learn" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800">Ver todos <ArrowRight size={16} /></Link>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -142,7 +142,7 @@ export default function SnapshotPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <button onClick={() => downloadPdf(snapshot, history)} className="k-card group flex items-center justify-between p-5 text-left transition hover:shadow-lg">
+        <button type="button" onClick={() => downloadPdf(snapshot, history)} className="k-card group flex items-center justify-between p-5 text-left transition hover:shadow-lg">
           <span className="flex items-center gap-4"><IconTile><Download size={22} /></IconTile><span><span className="block font-bold text-slate-950">Descargar PDF</span><span className="text-sm text-slate-500">Guarde su reporte completo.</span></span></span>
           <ArrowRight className="transition group-hover:translate-x-1" size={18} />
         </button>

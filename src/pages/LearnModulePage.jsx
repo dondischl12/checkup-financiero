@@ -69,7 +69,7 @@ export default function LearnModulePage() {
             </fieldset>
           ))}
         </div>
-        <button className="mt-6 rounded-lg bg-slate-950 px-6 py-3 font-semibold text-white">Enviar quiz</button>
+        <button type="submit" className="k-primary mt-6">Enviar quiz</button>
         {result && (
           <div className="mt-6 rounded-lg bg-emerald-50 p-5">
             {result.passed ? <Award className="mb-2 text-emerald-700" /> : <CheckCircle2 className="mb-2 text-amber-600" />}

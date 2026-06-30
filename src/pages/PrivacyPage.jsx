@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           <p key={item} className="rounded-lg bg-slate-50 p-4 leading-7 text-slate-700">{item}</p>
         ))}
       </div>
-      <button onClick={clear} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-slate-950 px-6 py-3 font-semibold text-white">
+      <button type="button" onClick={clear} className="k-primary mt-8">
         <Trash2 size={18} /> Borrar datos locales
       </button>
     </div>

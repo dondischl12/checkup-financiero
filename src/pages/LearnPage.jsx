@@ -14,14 +14,14 @@ export default function LearnPage() {
       <section className="k-shell relative overflow-hidden bg-[#071832] p-6 text-white">
         <div className="k-landscape opacity-20" />
         <div className="relative z-10">
-        <p className="text-sm font-bold text-emerald-200">Academia financiera</p>
-        <h1 className="mt-2 font-serif text-4xl font-bold">Aprenda a su ritmo</h1>
-        <p className="mt-3 max-w-2xl leading-7 text-slate-300">Módulos prácticos conectados a su snapshot financiero, diseñados para avanzar con claridad y sin presión.</p>
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <Stat label="Módulos iniciados" value={`${started}`} icon={<BookOpen size={20} />} />
-          <Stat label="Módulos completados" value={`${completed}`} icon={<Award size={20} />} />
-          <Stat label="Tiempo total estimado" value={`${totalMinutes} min`} icon={<Clock size={20} />} />
-        </div>
+          <p className="text-sm font-bold text-emerald-200">Academia financiera</p>
+          <h1 className="k-display mt-2 text-4xl text-white">Aprenda a su ritmo</h1>
+          <p className="mt-3 max-w-2xl leading-7 text-slate-300">Módulos prácticos conectados a su snapshot financiero, diseñados para avanzar con claridad y sin presión.</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <Stat label="Módulos iniciados" value={`${started}`} icon={<BookOpen size={20} />} />
+            <Stat label="Módulos completados" value={`${completed}`} icon={<Award size={20} />} />
+            <Stat label="Tiempo total estimado" value={`${totalMinutes} min`} icon={<Clock size={20} />} />
+          </div>
         </div>
       </section>
 

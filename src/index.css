@@ -15,8 +15,14 @@
     --katalyst-gold: #d9a441;
   }
 
+  html,
+  body,
+  #root {
+    overflow-x: hidden;
+  }
+
   body {
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Geist", "Avenir Next", "Helvetica Neue", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background:
       radial-gradient(circle at 84% 10%, rgba(47, 133, 90, 0.12), transparent 28rem),
       linear-gradient(180deg, #fffdfa 0%, var(--katalyst-cream) 46%, #f7f3eb 100%);
@@ -39,9 +45,25 @@
     box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
   }
 
+  .k-product-frame {
+    @apply min-w-0 rounded-lg border shadow-xl backdrop-blur;
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(231, 225, 214, 0.95);
+    box-shadow: 0 24px 70px rgba(7, 24, 50, 0.10);
+  }
+
   .k-card {
     @apply rounded-lg border bg-white shadow-sm;
     border-color: var(--katalyst-line);
+  }
+
+  .k-hover-lift {
+    @apply transition duration-300 ease-out;
+  }
+
+  .k-hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 42px rgba(7, 24, 50, 0.12);
   }
 
   .k-soft-card {
@@ -50,13 +72,52 @@
     border-color: rgba(231, 225, 214, 0.9);
   }
 
+  .k-panel {
+    @apply rounded-lg border;
+    background: rgba(255, 255, 255, 0.86);
+    border-color: rgba(231, 225, 214, 0.86);
+    box-shadow: 0 8px 24px rgba(7, 24, 50, 0.055);
+  }
+
+  .k-browser-frame {
+    @apply m-0 min-w-0 max-w-full overflow-hidden rounded-lg border bg-white shadow-xl;
+    border-color: rgba(231, 225, 214, 0.95);
+    box-shadow: 0 28px 80px rgba(7, 24, 50, 0.12);
+  }
+
+  .k-browser-frame img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+  }
+
+  .k-browser-bar {
+    @apply flex h-11 items-center justify-between border-b px-4 text-xs font-bold;
+    border-color: rgba(231, 225, 214, 0.9);
+    color: var(--katalyst-muted);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 247, 242, 0.94));
+  }
+
+  .k-browser-bar::before {
+    content: "";
+    width: 42px;
+    height: 10px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 5px 5px, #ef4444 0 4px, transparent 4.5px),
+      radial-gradient(circle at 21px 5px, #f59e0b 0 4px, transparent 4.5px),
+      radial-gradient(circle at 37px 5px, #22c55e 0 4px, transparent 4.5px);
+  }
+
   .k-eyebrow {
     @apply text-sm font-bold;
     color: var(--katalyst-sage-strong);
   }
 
   .k-display {
-    @apply font-serif font-bold leading-none;
+    @apply font-bold leading-none;
     color: var(--katalyst-navy);
     letter-spacing: 0;
   }
@@ -67,7 +128,7 @@
   }
 
   .k-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-bold text-white transition;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-bold text-white transition active:translate-y-px;
     background: var(--katalyst-navy);
     box-shadow: 0 14px 28px rgba(7, 24, 50, 0.18);
   }
@@ -77,7 +138,7 @@
   }
 
   .k-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border bg-white px-5 py-3 font-bold transition;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border bg-white px-5 py-3 font-bold transition active:translate-y-px;
     border-color: var(--katalyst-line);
     color: var(--katalyst-navy);
   }
@@ -90,6 +151,18 @@
     @apply grid h-12 w-12 shrink-0 place-items-center rounded-lg;
     background: var(--katalyst-sage);
     color: var(--katalyst-sage-strong);
+  }
+
+  .k-input {
+    @apply w-full rounded-lg border border-stone-200 bg-white px-4 py-3 text-slate-950 transition;
+  }
+
+  .k-input:focus {
+    @apply border-emerald-600 outline-none ring-4 ring-emerald-100;
+  }
+
+  .k-focus {
+    @apply focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-100;
   }
 
   .k-landscape {

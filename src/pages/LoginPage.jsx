@@ -30,7 +30,7 @@ export default function LoginPage() {
         <div className="relative z-10">
           <UserRound size={34} className="mb-6 text-emerald-200" />
           <p className="mb-3 text-sm font-bold uppercase text-emerald-200">Cuenta opcional</p>
-          <h1 className="mb-4 font-serif text-4xl font-bold leading-tight">Guarde su progreso cuando usted lo decida</h1>
+          <h1 className="k-display mb-4 text-4xl leading-tight text-white">Guarde su progreso cuando usted lo decida</h1>
           <p className="leading-7 text-slate-300">
             Puede completar el checkup sin cuenta. Crear una cuenta local permite preparar el flujo para comparar snapshots en el tiempo, siempre con consentimiento explícito antes de guardar datos financieros.
           </p>
@@ -58,25 +58,33 @@ export default function LoginPage() {
         <label className="mb-4 block">
           <span className="mb-2 block text-sm font-bold text-slate-700">Nombre</span>
           <input
+            id="account-name"
+            name="name"
             value={name}
             onChange={(event) => setName(event.target.value)}
             type="text"
+            autoComplete="name"
             placeholder="Su nombre"
-            className="w-full rounded-lg border border-stone-200 px-4 py-3 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+            className="k-input"
           />
         </label>
         <label className="mb-4 block">
           <span className="mb-2 block text-sm font-bold text-slate-700">Email</span>
           <input
+            id="account-email"
+            name="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             type="email"
+            autoComplete="email"
             placeholder="usted@correo.com"
-            className="w-full rounded-lg border border-stone-200 px-4 py-3 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+            className="k-input"
           />
         </label>
         <label className="mb-6 flex gap-3 rounded-lg bg-stone-50 p-4 text-sm leading-6 text-slate-600">
           <input
+            id="snapshot-consent"
+            name="snapshotSaveConsent"
             checked={consent}
             onChange={(event) => setConsent(event.target.checked)}
             type="checkbox"
@@ -87,7 +95,7 @@ export default function LoginPage() {
           </span>
         </label>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <button className="k-primary flex-1">
+          <button type="submit" className="k-primary flex-1">
             Crear cuenta <ArrowRight size={18} />
           </button>
           <Link to={snapshot ? '/snapshot' : '/checkup'} className="k-secondary flex-1">

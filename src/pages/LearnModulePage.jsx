@@ -36,7 +36,7 @@ export default function LearnModulePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <section className="rounded-lg bg-slate-950 p-6 text-white">
-        <p className="text-sm font-semibold text-emerald-200">{module.level} · {module.estimatedMinutes} min</p>
+        <p className="text-sm font-semibold text-emerald-200">{module.level} / {module.estimatedMinutes} min</p>
         <h1 className="mt-2 text-3xl font-bold">{module.title}</h1>
         <p className="mt-3 leading-7 text-slate-300">{module.description}</p>
       </section>
@@ -76,7 +76,7 @@ export default function LearnModulePage() {
             <p className="font-bold text-slate-950">
               {result.passed ? `Badge ganado: ${module.badge}` : 'Buen intento. Puedes repasar y reenviar.'}
             </p>
-            <p className="text-sm text-slate-600">Resultado: {result.score}% · {result.passed ? 'Módulo completado' : 'Repaso recomendado'}</p>
+            <p className="text-sm text-slate-600">Resultado: {result.score}% / {result.passed ? 'Módulo completado' : 'Repaso recomendado'}</p>
             <Link to="/learn" className="mt-4 inline-flex font-bold text-emerald-700">Volver a academia</Link>
           </div>
         )}

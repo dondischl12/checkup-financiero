@@ -26,11 +26,11 @@ export default function SnapshotPage() {
   const modules = learningModules.filter((module) => snapshot.recommendations.includes(module.id)).slice(0, 3)
 
   return (
-    <div id="snapshot-report" className="k-page">
-      <section className="grid gap-6 lg:grid-cols-[1fr_380px] lg:items-end">
+    <div id="snapshot-report" className="k-page k-scenic-page">
+      <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_380px] lg:items-end">
         <div>
           <p className="k-eyebrow flex items-center gap-2">
-            <ShieldCheck size={18} /> Snapshot completado · {new Date(snapshot.createdAt).toLocaleDateString('es-MX')}
+            <ShieldCheck size={18} /> Snapshot completado / {new Date(snapshot.createdAt).toLocaleDateString('es-MX')}
           </p>
           <h1 className="k-display mt-3 text-5xl leading-tight md:text-6xl">Su snapshot financiero</h1>
           <p className="k-copy mt-3 max-w-2xl text-lg">

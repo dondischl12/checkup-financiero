@@ -14,9 +14,9 @@ export default function SnapshotAnalysisPage() {
   const series = buildSeries(history)
 
   return (
-    <div className="k-page">
+    <div className="k-page k-scenic-page">
       <Link to="/snapshot" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800"><ArrowLeft size={16} /> Volver al snapshot</Link>
-      <section className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
+      <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_360px] lg:items-end">
         <div>
           <h1 className="k-display text-5xl">Análisis detallado de su snapshot</h1>
           <p className="k-copy mt-3 max-w-3xl text-lg">Profundizamos en sus datos para comparar ratios con guías recomendadas y convertirlos en acciones concretas.</p>
@@ -25,7 +25,7 @@ export default function SnapshotAnalysisPage() {
       </section>
 
       <section className="k-card px-5 py-3 text-sm text-slate-600">
-        <b className="text-slate-950">Perfil del hogar:</b> {profile.age || 'N/D'} años · {profile.dependents_count || 0} dependientes · hogar de {profile.household_size || 'N/D'} · {profile.employment_status || 'situación laboral no capturada'} · MXN
+        <b className="text-slate-950">Perfil del hogar:</b> {profile.age || 'N/D'} años / {profile.dependents_count || 0} dependientes / hogar de {profile.household_size || 'N/D'} / {profile.employment_status || 'situación laboral no capturada'} / MXN
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
@@ -43,7 +43,7 @@ export default function SnapshotAnalysisPage() {
             {metrics.categoryDistribution.map((item) => (
               <div key={item.name} className="flex justify-between text-sm">
                 <span className="font-bold text-slate-700">{item.name}</span>
-                <span>{Math.round(item.percent * 100)}% · {money.format(item.value)}</span>
+                <span>{Math.round(item.percent * 100)}% / {money.format(item.value)}</span>
               </div>
             ))}
           </div>

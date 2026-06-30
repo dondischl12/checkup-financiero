@@ -9,11 +9,16 @@ const pct = new Intl.NumberFormat('es-MX', { style: 'percent', maximumFractionDi
 const colors = {
   navy: [10, 28, 58],
   emerald: [47, 133, 90],
+  emeraldSoft: [232, 245, 236],
   sage: [226, 238, 224],
+  sageDeep: [153, 180, 150],
   cream: [251, 250, 246],
+  paper: [255, 255, 255],
   stone: [229, 226, 220],
+  stoneLight: [244, 241, 235],
   amber: [217, 139, 56],
   text: [55, 65, 81],
+  muted: [102, 112, 133],
 }
 
 export function exportSnapshotPdf(snapshot, history = []) {
@@ -53,10 +58,32 @@ export function exportSnapshotPdf(snapshot, history = []) {
 function drawPageBackground({ pdf }) {
   pdf.setFillColor(...colors.cream)
   pdf.rect(0, 0, 210, 297, 'F')
-  pdf.setFillColor(...colors.sage)
-  pdf.roundedRect(138, 18, 48, 22, 4, 4, 'F')
-  pdf.setFillColor(238, 241, 232)
-  pdf.circle(178, 56, 38, 'F')
+  drawPdfLandscape(pdf)
+}
+
+function drawPdfLandscape(pdf) {
+  pdf.setFillColor(238, 243, 232)
+  pdf.circle(174, 48, 42, 'F')
+  pdf.setFillColor(229, 238, 225)
+  pdf.triangle(118, 88, 166, 42, 218, 88, 'F')
+  pdf.setFillColor(211, 226, 206)
+  pdf.triangle(132, 98, 184, 52, 226, 98, 'F')
+  pdf.setFillColor(190, 211, 190)
+  pdf.triangle(126, 112, 176, 66, 220, 112, 'F')
+  ;[
+    [164, 73, 8],
+    [176, 78, 10],
+    [189, 85, 8],
+    [151, 92, 7],
+  ].forEach(([x, y, size]) => drawPine(pdf, x, y, size))
+}
+
+function drawPine(pdf, x, y, size) {
+  pdf.setFillColor(86, 126, 91)
+  pdf.triangle(x, y - size, x - size * 0.55, y, x + size * 0.55, y, 'F')
+  pdf.triangle(x, y - size * 1.42, x - size * 0.44, y - size * 0.38, x + size * 0.44, y - size * 0.38, 'F')
+  pdf.setFillColor(112, 84, 58)
+  pdf.rect(x - 0.45, y, 0.9, size * 0.55, 'F')
 }
 
 function addPage(ctx, title) {
@@ -74,8 +101,18 @@ function drawHeader(ctx, title) {
   pdf.text('KATALYST', 18, 20)
   pdf.setFontSize(9)
   pdf.setFont('helvetica', 'normal')
+  pdf.setTextColor(...colors.muted)
+  pdf.text('Reporte educativo privado / Moneda MXN', 18, 27)
+  pdf.setFillColor(...colors.emeraldSoft)
+  pdf.roundedRect(145, 15, 47, 17, 4, 4, 'F')
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(8)
+  pdf.setTextColor(...colors.emerald)
+  pdf.text('Datos privados', 153, 22)
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(6.7)
   pdf.setTextColor(...colors.text)
-  pdf.text('Reporte educativo privado · Moneda MXN', 18, 27)
+  pdf.text('Procesados localmente', 153, 27)
   pdf.setFont('helvetica', 'bold')
   pdf.setFontSize(24)
   pdf.setTextColor(...colors.navy)
@@ -86,7 +123,7 @@ function drawHeader(ctx, title) {
 function drawHero(ctx, snapshot) {
   const { pdf } = ctx
   const metrics = snapshot.derivedMetrics
-  card(pdf, 18, ctx.y, 174, 58)
+  card(pdf, 18, ctx.y, 174, 62)
   pdf.setFillColor(...colors.sage)
   pdf.circle(50, ctx.y + 31, 25, 'F')
   pdf.setFillColor(255, 255, 255)
@@ -110,8 +147,8 @@ function drawHero(ctx, snapshot) {
   pdf.text(wrap(pdf, snapshot.level.summary, 82), 92, ctx.y + 25)
   pdf.setFont('helvetica', 'bold')
   pdf.setTextColor(...colors.emerald)
-  pdf.text(`Flujo mensual neto: ${money.format(metrics.netFlow)}`, 92, ctx.y + 48)
-  ctx.y += 68
+  pdf.text(`Flujo mensual neto: ${money.format(metrics.netFlow)}`, 92, ctx.y + 50)
+  ctx.y += 72
 }
 
 function drawMetricGrid(ctx, snapshot) {
@@ -357,7 +394,7 @@ function note(ctx, text) {
 }
 
 function card(pdf, x, y, w, h) {
-  pdf.setFillColor(255, 255, 255)
+  pdf.setFillColor(...colors.paper)
   pdf.setDrawColor(...colors.stone)
   pdf.roundedRect(x, y, w, h, 4, 4, 'FD')
 }
@@ -370,7 +407,7 @@ function drawFooter(ctx) {
   pdf.setFontSize(7)
   pdf.setTextColor(...colors.text)
   pdf.text('Privacidad: datos procesados localmente en modo invitado.', 18, 288)
-  pdf.text(`KATALYST · ${ctx.page}`, 176, 288)
+  pdf.text(`KATALYST / ${ctx.page}`, 176, 288)
 }
 
 function formatAnswer(question, value) {

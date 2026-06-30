@@ -10,13 +10,13 @@ export default function ActionPlanPage() {
   const modules = learningModules.filter((module) => snapshot.recommendations.includes(module.id)).slice(0, 3)
 
   return (
-    <div className="space-y-6">
+    <div className="k-scenic-page space-y-6">
       <section className="flex flex-col justify-between gap-4 rounded-lg border border-emerald-100 bg-emerald-50/80 p-5 md:flex-row md:items-center">
         <p className="font-bold text-emerald-900">Basado en su snapshot y perfil del hogar</p>
         <Link to="/snapshot" className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 font-bold text-emerald-800">Ver mi snapshot <ArrowRight size={16} /></Link>
       </section>
 
-      <section>
+      <section className="k-scenic-hero p-6">
         <h1 className="k-display text-5xl text-slate-950">Su plan de acción</h1>
         <p className="mt-3 max-w-2xl text-lg leading-8 text-slate-600">Un plan personalizado de 30 días para avanzar hacia sus metas con pasos pequeños y sostenibles.</p>
       </section>
@@ -80,7 +80,7 @@ export default function ActionPlanPage() {
           {events.slice(0, 3).map((event) => (
             <div key={event.id} className="border-t border-stone-100 py-3 first:border-t-0">
               <p className="font-bold text-slate-950">{event.title}</p>
-              <p className="text-sm text-slate-600">{event.format} · {new Date(event.date).toLocaleDateString('es-MX')}</p>
+              <p className="text-sm text-slate-600">{event.format} / {new Date(event.date).toLocaleDateString('es-MX')}</p>
             </div>
           ))}
         </article>

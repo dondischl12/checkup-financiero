@@ -39,6 +39,64 @@
     @apply space-y-7;
   }
 
+  .k-scenic-page {
+    @apply relative isolate;
+  }
+
+  .k-scenic-page::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    inset: -4rem -2rem auto auto;
+    width: min(58rem, 72vw);
+    height: 34rem;
+    background:
+      radial-gradient(circle at 68% 36%, rgba(47, 133, 90, 0.13), transparent 23rem),
+      radial-gradient(circle at 22% 22%, rgba(217, 164, 65, 0.08), transparent 18rem);
+    pointer-events: none;
+  }
+
+  .k-scenic-page::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 4rem;
+    right: max(-2rem, -4vw);
+    width: min(42rem, 58vw);
+    height: 19rem;
+    opacity: 0.52;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 88% 56%, rgba(47, 133, 90, 0.16) 0 9%, transparent 10%),
+      radial-gradient(ellipse at 76% 58%, rgba(47, 133, 90, 0.13) 0 8%, transparent 9%),
+      radial-gradient(ellipse at 64% 61%, rgba(47, 133, 90, 0.11) 0 7%, transparent 8%),
+      linear-gradient(158deg, transparent 0 40%, rgba(116, 142, 114, 0.18) 41% 54%, transparent 55%),
+      linear-gradient(150deg, transparent 0 48%, rgba(47, 133, 90, 0.18) 49% 66%, transparent 67%),
+      linear-gradient(164deg, transparent 0 58%, rgba(152, 165, 132, 0.28) 59% 73%, transparent 74%);
+    filter: blur(0.2px);
+  }
+
+  .k-scenic-hero {
+    @apply relative overflow-hidden rounded-lg border shadow-xl backdrop-blur;
+    background: rgba(255, 255, 255, 0.72);
+    border-color: rgba(231, 225, 214, 0.9);
+    box-shadow: 0 22px 60px rgba(7, 24, 50, 0.09);
+  }
+
+  .k-scenic-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto auto;
+    width: 44%;
+    height: 100%;
+    opacity: 0.55;
+    background:
+      radial-gradient(ellipse at 78% 35%, rgba(47, 133, 90, 0.18) 0 10%, transparent 11%),
+      linear-gradient(152deg, transparent 0 42%, rgba(116, 142, 114, 0.14) 43% 56%, transparent 57%),
+      linear-gradient(160deg, transparent 0 54%, rgba(47, 133, 90, 0.18) 55% 70%, transparent 71%);
+    pointer-events: none;
+  }
+
   .k-shell {
     @apply rounded-lg border bg-white/90 shadow-xl backdrop-blur;
     border-color: rgba(231, 225, 214, 0.9);

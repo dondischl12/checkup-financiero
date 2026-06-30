@@ -67,12 +67,12 @@ export default function CheckupPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="k-scenic-page mx-auto max-w-7xl">
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <main className="space-y-7">
           <Stepper sections={sections} active={sectionIndex} />
 
-          <section className="grid gap-6 lg:grid-cols-[1fr_0.65fr] lg:items-end">
+          <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_0.65fr] lg:items-end">
             <div>
               <p className="k-eyebrow">Checkup privado local</p>
               <h1 className="k-display mt-3 text-5xl leading-tight md:text-6xl">

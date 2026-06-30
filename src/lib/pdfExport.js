@@ -24,6 +24,11 @@ const colors = {
 export function exportSnapshotPdf(snapshot, history = []) {
   if (!snapshot) return
 
+  const { pdf, filename } = createSnapshotPdf(snapshot, history)
+  pdf.save(filename)
+}
+
+export function createSnapshotPdf(snapshot, history = []) {
   const pdf = new jsPDF('p', 'mm', 'a4')
   const filename = `katalyst-snapshot-financiero-${format(new Date(snapshot.createdAt || new Date()), 'yyyy-MM-dd')}.pdf`
   const ctx = { pdf, y: 0, page: 1 }
@@ -52,7 +57,7 @@ export function exportSnapshotPdf(snapshot, history = []) {
   drawAnswerAppendix(ctx, snapshot)
   drawFooter(ctx)
 
-  pdf.save(filename)
+  return { pdf, filename }
 }
 
 function drawPageBackground({ pdf }) {
@@ -62,20 +67,70 @@ function drawPageBackground({ pdf }) {
 }
 
 function drawPdfLandscape(pdf) {
-  pdf.setFillColor(238, 243, 232)
-  pdf.circle(174, 48, 42, 'F')
-  pdf.setFillColor(229, 238, 225)
-  pdf.triangle(118, 88, 166, 42, 218, 88, 'F')
-  pdf.setFillColor(211, 226, 206)
-  pdf.triangle(132, 98, 184, 52, 226, 98, 'F')
-  pdf.setFillColor(190, 211, 190)
-  pdf.triangle(126, 112, 176, 66, 220, 112, 'F')
+  pdf.setFillColor(242, 247, 239)
+  pdf.circle(174, 44, 46, 'F')
+  pdf.setFillColor(250, 252, 248)
+  drawCloud(pdf, 158, 31, 1)
+  drawCloud(pdf, 186, 39, 0.72)
+
+  drawSkyline(pdf)
+
+  pdf.setFillColor(230, 239, 225)
+  pdf.triangle(112, 92, 160, 43, 218, 92, 'F')
+  pdf.setFillColor(217, 231, 211)
+  pdf.triangle(128, 105, 184, 52, 226, 105, 'F')
+  pdf.setFillColor(196, 218, 194)
+  pdf.triangle(112, 122, 170, 68, 226, 122, 'F')
+  pdf.setFillColor(224, 235, 219)
+  pdf.triangle(98, 134, 146, 94, 212, 134, 'F')
+  pdf.setFillColor(184, 209, 187)
+  pdf.triangle(134, 140, 196, 84, 232, 140, 'F')
+
   ;[
-    [164, 73, 8],
-    [176, 78, 10],
-    [189, 85, 8],
-    [151, 92, 7],
+    [155, 75, 6.6],
+    [164, 82, 8.2],
+    [174, 76, 7.2],
+    [184, 89, 9.5],
+    [194, 84, 7.8],
+    [145, 98, 6.2],
+    [168, 104, 6.7],
+    [203, 101, 6.4],
   ].forEach(([x, y, size]) => drawPine(pdf, x, y, size))
+
+  pdf.setFillColor(246, 249, 243)
+  pdf.rect(0, 132, 210, 165, 'F')
+  pdf.setFillColor(236, 243, 232)
+  pdf.triangle(0, 158, 62, 130, 132, 158, 'F')
+  pdf.setFillColor(218, 233, 214)
+  pdf.triangle(64, 170, 142, 126, 228, 170, 'F')
+  pdf.setFillColor(200, 222, 201)
+  pdf.triangle(0, 186, 95, 140, 210, 186, 'F')
+  pdf.setFillColor(...colors.cream)
+  pdf.rect(0, 196, 210, 101, 'F')
+}
+
+function drawCloud(pdf, x, y, scale) {
+  ;[
+    [0, 0, 8],
+    [7, -3, 6],
+    [14, 0, 8],
+    [7, 3, 10],
+  ].forEach(([dx, dy, radius]) => pdf.circle(x + dx * scale, y + dy * scale, radius * scale, 'F'))
+}
+
+function drawSkyline(pdf) {
+  pdf.setFillColor(212, 224, 211)
+  ;[
+    [144, 60, 4, 24],
+    [151, 54, 5, 30],
+    [160, 66, 4, 18],
+    [170, 50, 6, 34],
+    [181, 62, 4, 22],
+    [190, 57, 5, 27],
+    [201, 68, 4, 16],
+  ].forEach(([x, y, width, height]) => pdf.rect(x, y, width, height, 'F'))
+  pdf.setFillColor(191, 207, 190)
+  pdf.triangle(173, 45, 176, 32, 179, 45, 'F')
 }
 
 function drawPine(pdf, x, y, size) {

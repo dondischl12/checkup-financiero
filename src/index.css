@@ -47,12 +47,14 @@
     content: "";
     position: absolute;
     z-index: -2;
-    inset: -4rem -2rem auto auto;
-    width: min(58rem, 72vw);
-    height: 34rem;
+    inset: -3rem -4rem auto auto;
+    width: min(66rem, 78vw);
+    height: 39rem;
     background:
-      radial-gradient(circle at 68% 36%, rgba(47, 133, 90, 0.13), transparent 23rem),
-      radial-gradient(circle at 22% 22%, rgba(217, 164, 65, 0.08), transparent 18rem);
+      radial-gradient(ellipse at 82% 22%, rgba(255, 255, 255, 0.78) 0 9rem, transparent 9.4rem),
+      radial-gradient(ellipse at 68% 34%, rgba(47, 133, 90, 0.13), transparent 24rem),
+      radial-gradient(ellipse at 20% 20%, rgba(217, 164, 65, 0.08), transparent 18rem),
+      linear-gradient(180deg, rgba(242, 248, 238, 0.82), rgba(255, 255, 255, 0));
     pointer-events: none;
   }
 
@@ -60,20 +62,25 @@
     content: "";
     position: absolute;
     z-index: -1;
-    top: 4rem;
-    right: max(-2rem, -4vw);
-    width: min(42rem, 58vw);
-    height: 19rem;
-    opacity: 0.52;
+    top: 3rem;
+    right: max(-4rem, -8vw);
+    width: min(52rem, 66vw);
+    height: 25rem;
+    opacity: 0.62;
     pointer-events: none;
     background:
-      radial-gradient(ellipse at 88% 56%, rgba(47, 133, 90, 0.16) 0 9%, transparent 10%),
-      radial-gradient(ellipse at 76% 58%, rgba(47, 133, 90, 0.13) 0 8%, transparent 9%),
-      radial-gradient(ellipse at 64% 61%, rgba(47, 133, 90, 0.11) 0 7%, transparent 8%),
-      linear-gradient(158deg, transparent 0 40%, rgba(116, 142, 114, 0.18) 41% 54%, transparent 55%),
-      linear-gradient(150deg, transparent 0 48%, rgba(47, 133, 90, 0.18) 49% 66%, transparent 67%),
-      linear-gradient(164deg, transparent 0 58%, rgba(152, 165, 132, 0.28) 59% 73%, transparent 74%);
-    filter: blur(0.2px);
+      radial-gradient(ellipse at 74% 16%, rgba(255, 255, 255, 0.88) 0 8%, transparent 9%),
+      radial-gradient(ellipse at 84% 18%, rgba(255, 255, 255, 0.72) 0 7%, transparent 8%),
+      radial-gradient(ellipse at 52% 24%, rgba(255, 255, 255, 0.64) 0 6%, transparent 7%),
+      repeating-linear-gradient(90deg, transparent 0 1.85rem, rgba(83, 112, 91, 0.13) 1.9rem 2.15rem, transparent 2.2rem 3.8rem),
+      radial-gradient(ellipse at 83% 60%, rgba(47, 133, 90, 0.22) 0 7%, transparent 7.6%),
+      radial-gradient(ellipse at 72% 63%, rgba(47, 133, 90, 0.17) 0 6%, transparent 6.7%),
+      radial-gradient(ellipse at 61% 68%, rgba(47, 133, 90, 0.13) 0 5.5%, transparent 6.2%),
+      linear-gradient(154deg, transparent 0 39%, rgba(168, 184, 153, 0.18) 39.5% 52%, transparent 52.8%),
+      linear-gradient(148deg, transparent 0 47%, rgba(104, 143, 111, 0.20) 47.5% 63%, transparent 63.8%),
+      linear-gradient(160deg, transparent 0 58%, rgba(180, 197, 171, 0.34) 58.5% 74%, transparent 74.7%);
+    filter: blur(0.15px);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 90%, transparent 100%);
   }
 
   .k-scenic-hero {
@@ -86,15 +93,41 @@
   .k-scenic-hero::before {
     content: "";
     position: absolute;
-    inset: 0 0 auto auto;
-    width: 44%;
+    inset: 0 0 0 auto;
+    width: 52%;
     height: 100%;
-    opacity: 0.55;
+    opacity: 0.68;
     background:
-      radial-gradient(ellipse at 78% 35%, rgba(47, 133, 90, 0.18) 0 10%, transparent 11%),
-      linear-gradient(152deg, transparent 0 42%, rgba(116, 142, 114, 0.14) 43% 56%, transparent 57%),
-      linear-gradient(160deg, transparent 0 54%, rgba(47, 133, 90, 0.18) 55% 70%, transparent 71%);
+      radial-gradient(ellipse at 78% 18%, rgba(255, 255, 255, 0.76) 0 10%, transparent 10.8%),
+      radial-gradient(ellipse at 62% 23%, rgba(255, 255, 255, 0.58) 0 8%, transparent 8.8%),
+      repeating-linear-gradient(90deg, transparent 0 2rem, rgba(78, 111, 87, 0.11) 2.05rem 2.25rem, transparent 2.3rem 4.4rem),
+      radial-gradient(ellipse at 86% 65%, rgba(47, 133, 90, 0.18) 0 8%, transparent 8.8%),
+      radial-gradient(ellipse at 74% 69%, rgba(47, 133, 90, 0.13) 0 7%, transparent 7.8%),
+      linear-gradient(152deg, transparent 0 40%, rgba(116, 142, 114, 0.15) 40.5% 56%, transparent 56.8%),
+      linear-gradient(160deg, transparent 0 53%, rgba(47, 133, 90, 0.18) 53.5% 70%, transparent 70.8%);
     pointer-events: none;
+    mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 100%);
+  }
+
+  .k-scenic-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -7% 0 auto;
+    width: 70%;
+    height: 36%;
+    opacity: 0.46;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 24% 98%, rgba(45, 114, 77, 0.24) 0 28%, transparent 29%),
+      radial-gradient(ellipse at 47% 96%, rgba(108, 149, 118, 0.26) 0 30%, transparent 31%),
+      radial-gradient(ellipse at 77% 94%, rgba(47, 133, 90, 0.22) 0 34%, transparent 35%),
+      linear-gradient(167deg, transparent 0 34%, rgba(167, 187, 156, 0.36) 34.5% 58%, transparent 58.8%);
+    filter: blur(0.1px);
+  }
+
+  .k-scenic-hero > * {
+    position: relative;
+    z-index: 1;
   }
 
   .k-shell {

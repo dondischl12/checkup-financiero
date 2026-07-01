@@ -6,9 +6,15 @@ Privacy-first financial education and self-assessment platform built for communi
 
 ## Overview
 
-Katalyst Checkup Financiero helps users complete a private financial snapshot, understand their financial health, download a personalized PDF report, receive recommended learning modules, and optionally connect with Katalyst resources.
+Katalyst Checkup Financiero helps users complete a private financial snapshot, understand their financial health, download a personalized PDF report, and see clear next steps. Education, resources, accounts, history, and admin insights are framed as upcoming product areas for later phases.
 
-The product is designed for financial education and community support, with a local-first privacy model: users can complete the checkup without creating an account, and their answers remain on their device unless they explicitly choose to save progress.
+The Monday beta is focused on one reliable flow: checkup -> snapshot -> PDF. Education, resources, schedule, accounts, history, and admin insights are presented as upcoming product areas, not active production features.
+
+Simple beta privacy message:
+
+> Tus respuestas se procesan sólo para generar este snapshot. En esta beta sin cuenta, no se guardan en una base de datos y se borran al actualizar la página.
+>
+> *Mensaje pendiente de revisión legal.
 
 ## Why This Exists
 
@@ -23,10 +29,10 @@ The goal is not to replace financial advisors. It gives community members clarit
 - Deterministic scoring engine using income, expenses, debt, savings, dependents, protection, and financial habits
 - Personalized recommendations and 30-day action plan
 - Branded downloadable PDF report
-- Financial education modules inspired by professional learning platforms
-- Optional account flow for saving progress later
-- Katalyst resources and contact flow
-- Aggregate-only admin insights dashboard
+- Financial education roadmap marked as Próximamente
+- Optional account/history roadmap marked as Próximamente
+- Katalyst resources and schedule roadmap marked as Próximamente
+- Aggregate-only admin insights roadmap marked as Próximamente
 - Supabase-ready schema and privacy model
 
 ## Product Screenshots
@@ -63,18 +69,41 @@ The goal is not to replace financial advisors. It gives community members clarit
 - Framer Motion
 - jsPDF for structured multi-page PDF export
 - React Hook Form / Zod installed for future form hardening
-- localStorage local-first persistence for the MVP
+- in-memory guest snapshot state for the Monday beta
 - Supabase-ready schema draft for future production persistence
 
 The current MVP is implemented in React JavaScript. The product architecture is intentionally modular so it can evolve into a TypeScript, Supabase, and Vercel production build without rewriting the scoring or UI flows.
 
 ## Privacy-First Architecture
 
-Anonymous users can complete the checkup and download their report without creating an account. Their financial answers are processed locally and are not sent to a backend.
+Anonymous users can complete the checkup and download their report without creating an account. In the Monday beta, guest financial answers are held only for the current page session so the user can see the snapshot and download the PDF.
 
-If a user creates an account later, they can choose whether to save their snapshot and track progress over time.
+In guest mode, refreshing the page or opening a new tab does not preserve the financial snapshot. The beta does not send guest answers to a backend or save them to a database.
 
-Admin dashboards must only show aggregate insights. Individual financial responses should not be visible to administrators unless a user voluntarily submits a support request.
+Future account, history, Supabase sync, analytics, and admin insights require explicit consent and legal/privacy review. Admin dashboards must only show aggregate insights. Individual financial responses should not be visible to administrators unless a future consented support flow explicitly allows it.
+
+## Monday Beta Readiness
+
+Ready for the July 6, 2026 Katalyst call:
+
+- QR should open the deployed `/checkup` route
+- Private one-time checkup
+- Deterministic score and derived financial metrics
+- Snapshot dashboard
+- Detailed analysis page
+- 30-day action plan
+- Local PDF generation
+- Simple Spanish privacy copy with legal-review asterisk
+
+Not active in the Monday beta:
+
+- real accounts or sign-in
+- saved history
+- Supabase/Auth
+- active education modules
+- event registration or schedule management
+- admin aggregate dashboard
+- analytics connected to financial answers
 
 ## Scoring Methodology
 
@@ -146,13 +175,17 @@ npm run build
 
 The MVP runs as a static local-first product. A production version can add:
 
+- Legal-reviewed privacy, retention, and financial-disclaimer language
 - Supabase Auth for optional accounts
 - Row-level security for saved snapshots
 - User-controlled consent before saving private financial data
 - Learning progress synced across devices
+- Active education modules
+- Real schedule/events and resource registration
 - Admin aggregate analytics through secured views or RPCs
 - Vercel deployment with environment-based configuration
-- Legal-reviewed privacy, retention, and financial-disclaimer language
+- Final domain
+- Safe analytics that do not collect sensitive financial answers
 
 ## Recruiter / Case Study Framing
 

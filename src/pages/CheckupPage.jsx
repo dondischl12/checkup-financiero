@@ -6,6 +6,8 @@ import { buildSnapshot } from '../lib/financialCalculations'
 import { readCheckupDraft, saveCheckupEntry, saveHelpRequest, saveSnapshot, writeCheckupDraft } from '../utils/storage'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
+const betaPrivacyCopy = 'Tus respuestas se procesan sólo para generar este snapshot. En esta beta sin cuenta, no se guardan en una base de datos y se borran al actualizar la página.'
+const legalReviewCopy = '*Mensaje pendiente de revisión legal.'
 
 const sectionIcons = {
   profile_household: ShieldCheck,
@@ -77,7 +79,7 @@ export default function CheckupPage() {
               </h1>
             </div>
             <p className="k-copy text-lg">
-              Estas respuestas ayudan a construir un panorama financiero claro. Puede omitir una pregunta; su resultado será menos preciso.
+              {betaPrivacyCopy}
             </p>
           </section>
 
@@ -124,9 +126,9 @@ export default function CheckupPage() {
           </section>
 
           <section className="grid gap-4 border-t border-stone-200 pt-5 text-sm md:grid-cols-3">
-            <PrivacyPoint icon={<ShieldCheck size={18} />} title="100% confidencial" copy="Sus respuestas se usan únicamente para este snapshot." />
-            <PrivacyPoint icon={<LockKeyhole size={18} />} title="Solo en su dispositivo" copy="No compartimos datos sin su consentimiento." />
-            <PrivacyPoint icon={<Check size={18} />} title="Usted tiene el control" copy="Puede editar o borrar su información local." />
+            <PrivacyPoint icon={<ShieldCheck size={18} />} title="Una sola sesión" copy="El snapshot invitado vive sólo mientras no actualice la página." />
+            <PrivacyPoint icon={<LockKeyhole size={18} />} title="Sin base de datos" copy="En esta beta no enviamos ni guardamos sus respuestas financieras." />
+            <PrivacyPoint icon={<Check size={18} />} title="Mensaje legal" copy={legalReviewCopy} />
           </section>
         </main>
 
@@ -138,8 +140,9 @@ export default function CheckupPage() {
             </div>
             <h2 className="font-bold text-slate-950">Su privacidad es nuestra prioridad</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Sus respuestas permanecen en este dispositivo mientras usa el modo invitado.
+              {betaPrivacyCopy}
             </p>
+            <p className="mt-3 text-xs font-semibold text-slate-500">{legalReviewCopy}</p>
           </section>
         </aside>
       </div>

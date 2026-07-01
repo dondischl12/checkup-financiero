@@ -5,6 +5,8 @@ import { learningModules } from '../data/learningModules'
 import { getLastSnapshot, getSnapshotHistory } from '../utils/storage'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
+const betaPrivacyCopy = 'Tus respuestas se procesan sólo para generar este snapshot. En esta beta sin cuenta, no se guardan en una base de datos y se borran al actualizar la página.'
+const legalReviewCopy = '*Mensaje pendiente de revisión legal.'
 
 export default function SnapshotPage() {
   const snapshot = getLastSnapshot()
@@ -42,7 +44,8 @@ export default function SnapshotPage() {
             <LockKeyhole className="shrink-0 text-emerald-700" />
             <div>
               <h2 className="font-bold text-slate-950">Su información es privada</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-600">Este snapshot se procesó localmente en su dispositivo.</p>
+              <p className="mt-1 text-sm leading-6 text-slate-600">{betaPrivacyCopy}</p>
+              <p className="mt-2 text-xs font-semibold text-slate-500">{legalReviewCopy}</p>
             </div>
           </div>
         </div>
@@ -67,7 +70,7 @@ export default function SnapshotPage() {
             <Insight icon={<ArrowRight />} title="Siguiente paso" value={snapshot.actionPlan[0]?.title} copy={snapshot.actionPlan[0]?.description} />
           </div>
         </article>
-        <ChartCard title={history.length > 1 ? 'Evolución de su puntaje' : 'Guarde su progreso'}>
+        <ChartCard title={history.length > 1 ? 'Evolución de su puntaje' : 'Progreso próximamente'}>
           {history.length > 1 ? (
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={buildTrend(history)}>
@@ -124,18 +127,16 @@ export default function SnapshotPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="k-display text-2xl text-slate-950">Módulos recomendados para usted</h2>
-          <Link to="/learn" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800">Ver todos <ArrowRight size={16} /></Link>
+          <h2 className="k-display text-2xl text-slate-950">Educación recomendada próximamente</h2>
+          <Link to="/learn" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800">Ver roadmap <ArrowRight size={16} /></Link>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {modules.map((module) => (
             <article key={module.id} className="k-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-              <p className="text-sm font-bold text-emerald-700">{module.badge}</p>
+              <p className="text-sm font-bold text-amber-700">Próximamente / {module.badge}</p>
               <h3 className="mt-2 text-xl font-bold text-slate-950">{module.title}</h3>
               <p className="mt-2 min-h-16 text-sm leading-6 text-slate-600">{module.description}</p>
-              <div className="mt-4 h-2 rounded-full bg-stone-100">
-                <div className="h-2 rounded-full bg-emerald-700" style={{ width: `${Math.min(80, module.estimatedMinutes * 3)}%` }} />
-              </div>
+              <p className="mt-4 rounded-lg bg-stone-50 px-3 py-2 text-xs font-bold text-slate-500">Se activará cuando Katalyst abra la fase educativa.</p>
             </article>
           ))}
         </div>
@@ -157,7 +158,7 @@ export default function SnapshotPage() {
       </section>
 
       <p className="border-t border-stone-200 pt-4 text-xs leading-6 text-slate-500">
-        Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada.
+        Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada. {betaPrivacyCopy} {legalReviewCopy}
       </p>
     </div>
   )
@@ -172,7 +173,7 @@ function AccountHistoryCTA({ score }) {
           <span className="k-icon-tile"><UserRound size={22} /></span>
           <h3 className="mt-4 text-xl font-bold text-slate-950">Compare su progreso en el tiempo</h3>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Cree una cuenta opcional para guardar este snapshot y ver cómo cambia su puntaje mes a mes.
+            Próximamente podrá crear una cuenta para guardar snapshots con consentimiento y comparar avances. Por ahora este resultado es de una sola sesión.
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -180,8 +181,8 @@ function AccountHistoryCTA({ score }) {
             <p className="text-xs font-bold uppercase text-emerald-800">Snapshot actual</p>
             <p className="text-4xl font-bold text-slate-950">{score}<span className="text-base text-slate-500">/100</span></p>
           </div>
-          <Link to="/login" className="k-primary px-4 py-3 text-sm">
-            Crear cuenta <ArrowRight size={16} />
+          <Link to="/login" className="k-secondary px-4 py-3 text-sm">
+            Próximamente <ArrowRight size={16} />
           </Link>
         </div>
       </div>

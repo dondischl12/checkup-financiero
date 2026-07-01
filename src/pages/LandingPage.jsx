@@ -28,7 +28,7 @@ const productFlow = [
   },
   {
     title: 'Reporte descargable',
-    copy: 'El PDF resume métricas, fortalezas, riesgos y próximos pasos.',
+    copy: 'El PDF resume métricas, fortalezas, riesgos, próximos pasos y privacidad beta.',
     image: screenshot('pdf'),
     icon: FileText,
   },
@@ -37,7 +37,7 @@ const productFlow = [
 const capabilityRows = [
   ['Entrada', 'Respuestas del hogar, ingresos, gastos, deuda, ahorro y hábitos'],
   ['Cálculo', 'Motor determinístico con ratios explicables y recomendaciones'],
-  ['Salida', 'Score, snapshot, PDF, módulos, plan de 30 días y recursos'],
+  ['Salida', 'Score, snapshot, PDF, plan de 30 días y roadmap educativo'],
 ]
 
 export default function LandingPage() {
@@ -51,7 +51,7 @@ export default function LandingPage() {
             <span className="block">financiero</span>
           </h1>
           <p className="k-copy mt-5 max-w-[34ch] text-lg">
-            Un producto privado para convertir presupuesto familiar en score, reporte y plan educativo.
+            Un producto privado para convertir presupuesto familiar en score, reporte y próximos pasos.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link to="/checkup" className="k-primary px-6 py-4">
@@ -85,9 +85,9 @@ export default function LandingPage() {
       <section className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
         <BrowserFrame title="Learning path" image={screenshot('learning')} />
         <div className="space-y-5">
-          <h2 className="k-display text-4xl md:text-5xl">El score no termina en el número.</h2>
+          <h2 className="k-display text-4xl md:text-5xl">Educación como siguiente fase.</h2>
           <p className="k-copy text-lg">
-            Cada resultado recomienda módulos y acciones para que la persona sepa qué aprender, ajustar o revisar con Katalyst.
+            El snapshot ya puede sugerir temas educativos. Los módulos, recursos y calendario quedan marcados como próximamente para no simular funcionalidad activa.
           </p>
           <div className="grid gap-3">
             <LearningRow title="Presupuesto" copy="Organizar flujo mensual y gastos variables." />
@@ -95,7 +95,7 @@ export default function LandingPage() {
             <LearningRow title="Deuda" copy="Priorizar pagos y reducir presión financiera." />
           </div>
           <Link to="/learn" className="k-secondary inline-flex">
-            Explorar recursos <ArrowRight size={16} />
+            Ver próximos módulos <ArrowRight size={16} />
           </Link>
         </div>
       </section>
@@ -126,12 +126,12 @@ export default function LandingPage() {
         <div className="space-y-5">
           <h2 className="k-display text-4xl md:text-5xl">Acompañamiento después del reporte.</h2>
           <p className="k-copy text-lg">
-            Después del snapshot, la experiencia ayuda a convertir claridad financiera en pasos pequeños, recursos y seguimiento opcional.
+            Después del snapshot, la beta ayuda a convertir claridad financiera en pasos pequeños. Recursos, eventos y seguimiento quedan listos como visión de producto.
           </p>
           <div className="grid gap-3">
             <ArchitectureLine title="Modo invitado" copy="Complete el checkup y descargue su PDF sin crear cuenta." />
-            <ArchitectureLine title="Progreso opcional" copy="Guarde snapshots solo si quiere comparar avances en el tiempo." />
-            <ArchitectureLine title="Recursos Katalyst" copy="Encuentre módulos, eventos y próximos pasos conectados a su resultado." />
+            <ArchitectureLine title="Progreso opcional" copy="Próximamente: guardar snapshots sólo con consentimiento." />
+            <ArchitectureLine title="Recursos Katalyst" copy="Próximamente: módulos, eventos y recursos conectados al resultado." />
           </div>
         </div>
       </section>
@@ -165,13 +165,14 @@ function HeroMockup() {
               <span className="k-icon-tile h-10 w-10"><UserRound size={18} /></span>
               <div>
                 <p className="font-bold text-slate-950">Cuenta opcional</p>
-                <p className="text-sm text-slate-600">Guardar historial requiere consentimiento.</p>
+                <p className="text-sm text-slate-600">Próximamente con consentimiento.</p>
               </div>
             </div>
           </article>
           <article className="k-panel p-5">
             <p className="text-sm font-bold text-slate-500">Capacidad demostrada</p>
-            <p className="mt-1 text-lg font-bold text-slate-950">Score, PDF, módulos y próximos pasos.</p>
+            <p className="mt-1 text-lg font-bold text-slate-950">Score, PDF y próximos pasos.</p>
+            <p className="mt-1 text-xs font-bold text-amber-700">Módulos y recursos: próximamente.</p>
           </article>
         </div>
       </div>
@@ -186,13 +187,13 @@ function TrustBento() {
         <ShieldCheck className="text-emerald-700" size={26} />
         <h2 className="k-display mt-5 max-w-lg text-4xl">Diseñado para confianza antes que captura.</h2>
         <p className="k-copy mt-4 max-w-xl">
-          El checkup funciona en modo invitado. La cuenta aparece después, solo para guardar progreso cuando el usuario lo decide.
+          El checkup funciona en modo invitado como snapshot de una sola sesión. Guardar progreso será una fase posterior con consentimiento.
         </p>
       </article>
       <article className="k-card k-hover-lift p-6">
         <LockKeyhole className="text-emerald-700" size={24} />
         <h3 className="mt-5 font-bold text-slate-950">Local-first</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-600">Las respuestas se procesan en el dispositivo.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">En esta beta no se guardan respuestas financieras sin cuenta.</p>
       </article>
       <article className="k-card k-hover-lift p-6">
         <Download className="text-emerald-700" size={24} />
@@ -202,12 +203,12 @@ function TrustBento() {
       <article className="k-card k-hover-lift p-6 lg:col-span-2">
         <BookOpen className="text-emerald-700" size={24} />
         <h3 className="mt-5 font-bold text-slate-950">Recursos conectados</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-600">El resultado recomienda módulos y acciones según las áreas que más conviene atender.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">El resultado sugiere temas; los módulos activos llegan próximamente.</p>
       </article>
       <article className="k-card k-hover-lift p-6 lg:col-span-2">
         <UserRound className="text-emerald-700" size={24} />
         <h3 className="mt-5 font-bold text-slate-950">Cuenta opcional</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-600">El historial aparece cuando la persona decide guardar snapshots reales.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">El historial queda como fase posterior y requerirá consentimiento explícito.</p>
       </article>
     </section>
   )

@@ -18,7 +18,7 @@ function RedirectHandler({ children }) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename="/checkup-financiero">
+    <BrowserRouter>
       <RedirectHandler>
         <App />
       </RedirectHandler>

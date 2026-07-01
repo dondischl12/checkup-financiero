@@ -5,6 +5,8 @@ import { learningModules } from '../data/learningModules'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 const pct = new Intl.NumberFormat('es-MX', { style: 'percent', maximumFractionDigits: 0 })
+const betaPrivacyCopy = 'Tus respuestas se procesan sólo para generar este snapshot. En esta beta sin cuenta, no se guardan en una base de datos y se borran al actualizar la página.'
+const legalReviewCopy = '*Mensaje pendiente de revisión legal.'
 
 const colors = {
   navy: [10, 28, 58],
@@ -47,7 +49,7 @@ export function createSnapshotPdf(snapshot, history = []) {
   drawHistory(ctx, history)
   drawFooter(ctx)
 
-  addPage(ctx, 'Plan de acción y educación')
+  addPage(ctx, 'Plan de acción y educación próxima')
   drawActionPlan(ctx, snapshot)
   drawRecommendedModules(ctx, snapshot)
   drawDisclaimer(ctx)
@@ -167,7 +169,7 @@ function drawHeader(ctx, title) {
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(6.7)
   pdf.setTextColor(...colors.text)
-  pdf.text('Procesados localmente', 153, 27)
+  pdf.text('Beta sin base de datos', 153, 27)
   pdf.setFont('helvetica', 'bold')
   pdf.setFontSize(24)
   pdf.setTextColor(...colors.navy)
@@ -351,12 +353,12 @@ function drawActionPlan(ctx, snapshot) {
 
 function drawRecommendedModules(ctx, snapshot) {
   ctx.y += 4
-  sectionTitle(ctx, 'Módulos recomendados')
+  sectionTitle(ctx, 'Módulos recomendados próximamente')
   const modules = learningModules.filter((module) => snapshot.recommendations.includes(module.id))
-  drawTable(ctx, ['Módulo', 'Nivel', 'Min', 'Por qué'], modules.map((module) => [
+  drawTable(ctx, ['Módulo', 'Estado', 'Fase', 'Por qué'], modules.map((module) => [
     module.title,
-    module.level,
-    `${module.estimatedMinutes}`,
+    'Próximamente',
+    'Educación',
     module.description,
   ]), [48, 28, 18, 76])
 }
@@ -364,7 +366,7 @@ function drawRecommendedModules(ctx, snapshot) {
 function drawDisclaimer(ctx) {
   ctx.y += 8
   sectionTitle(ctx, 'Nota educativa')
-  note(ctx, 'Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada, recomendación de inversión, diagnóstico legal, fiscal o crediticio. Para decisiones relevantes, consulte a un asesor profesional.')
+  note(ctx, `Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada, recomendación de inversión, diagnóstico legal, fiscal o crediticio. ${betaPrivacyCopy} ${legalReviewCopy}`)
 }
 
 function drawAnswerAppendix(ctx, snapshot) {
@@ -440,12 +442,14 @@ function sectionTitle(ctx, title) {
 }
 
 function note(ctx, text) {
-  card(ctx.pdf, 18, ctx.y, 174, 24)
+  const lines = wrap(ctx.pdf, text, 160)
+  const height = Math.max(24, 10 + lines.length * 4.2)
+  card(ctx.pdf, 18, ctx.y, 174, height)
   ctx.pdf.setFont('helvetica', 'normal')
   ctx.pdf.setFontSize(8.5)
   ctx.pdf.setTextColor(...colors.text)
-  ctx.pdf.text(wrap(ctx.pdf, text, 160), 24, ctx.y + 8)
-  ctx.y += 32
+  ctx.pdf.text(lines, 24, ctx.y + 8)
+  ctx.y += height + 8
 }
 
 function card(pdf, x, y, w, h) {
@@ -461,7 +465,7 @@ function drawFooter(ctx) {
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(7)
   pdf.setTextColor(...colors.text)
-  pdf.text('Privacidad: datos procesados localmente en modo invitado.', 18, 288)
+  pdf.text('Privacidad beta: no se guardan respuestas financieras sin cuenta. *Mensaje pendiente de revisión legal.', 18, 288)
   pdf.text(`KATALYST / ${ctx.page}`, 176, 288)
 }
 

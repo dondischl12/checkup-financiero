@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, CalendarDays, CheckCircle2, Flame, Target, Trophy } from 'lucide-react'
 import { learningModules } from '../data/learningModules'
-import { events } from '../data/events'
 import { getLastSnapshot } from '../utils/storage'
 
 export default function ActionPlanPage() {
@@ -25,7 +24,7 @@ export default function ActionPlanPage() {
         <article className="k-card p-6">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="k-display text-2xl text-slate-950">Roadmap de 30 días</h2>
-            <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-800">25% progreso</span>
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-800">Guía sugerida</span>
           </div>
           <div className="grid gap-4 md:grid-cols-4">
             {snapshot.actionPlan.map((item) => (
@@ -54,35 +53,34 @@ export default function ActionPlanPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-4">
-        <Stat icon={<CalendarDays />} label="Días completados" value="7 / 30" />
-        <Stat icon={<Flame />} label="Racha actual" value="3 días" />
-        <Stat icon={<Trophy />} label="Acciones completadas" value="5 / 12" />
-        <Stat icon={<Target />} label="Impacto estimado" value="+18%" />
+        <Stat icon={<CalendarDays />} label="Horizonte sugerido" value="30 días" />
+        <Stat icon={<Flame />} label="Modo beta" value="Una sesión" />
+        <Stat icon={<Trophy />} label="Seguimiento" value="Próximamente" />
+        <Stat icon={<Target />} label="Objetivo" value="Claridad" />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
         <article className="k-card p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-bold text-slate-950">Recursos y módulos recomendados</h2>
-            <Link to="/learn" className="text-sm font-bold text-emerald-800">Ver todos</Link>
+            <h2 className="font-bold text-slate-950">Módulos recomendados próximamente</h2>
+            <Link to="/learn" className="text-sm font-bold text-emerald-800">Ver roadmap</Link>
           </div>
           <div className="grid gap-3 md:grid-cols-3">
             {modules.map((module) => (
-              <Link key={module.id} to={`/learn/${module.id}`} className="rounded-lg border border-stone-200 p-4">
+              <article key={module.id} className="rounded-lg border border-stone-200 p-4">
+                <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">Próximamente</span>
                 <h3 className="font-bold text-slate-950">{module.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{module.description}</p>
-              </Link>
+              </article>
             ))}
           </div>
         </article>
         <article className="k-card p-6">
-          <h2 className="mb-4 font-bold text-slate-950">Eventos Katalyst sugeridos</h2>
-          {events.slice(0, 3).map((event) => (
-            <div key={event.id} className="border-t border-stone-100 py-3 first:border-t-0">
-              <p className="font-bold text-slate-950">{event.title}</p>
-              <p className="text-sm text-slate-600">{event.format} / {new Date(event.date).toLocaleDateString('es-MX')}</p>
-            </div>
-          ))}
+          <h2 className="mb-4 font-bold text-slate-950">Recursos Katalyst</h2>
+          <p className="text-sm leading-6 text-slate-600">
+            Los talleres, guías y eventos se conectarán al snapshot en una siguiente fase. En esta beta no se registran inscripciones ni preferencias de eventos.
+          </p>
+          <Link to="/events" className="k-secondary mt-5 inline-flex">Ver recursos próximos <ArrowRight size={16} /></Link>
         </article>
       </section>
     </div>

@@ -1,67 +1,59 @@
 import { Link } from 'react-router-dom'
-import { Award, BookOpen, Clock, Lock } from 'lucide-react'
-import { learningModules } from '../data/learningModules'
-import { readStorage, STORAGE_KEYS } from '../utils/storage'
+import { ArrowRight, BookOpen, Clock, LockKeyhole, Sparkles } from 'lucide-react'
+
+const upcomingModules = [
+  ['Presupuesto mensual', 'Organizar ingresos, gastos fijos y decisiones de ahorro.'],
+  ['Fondo de emergencia', 'Construir una reserva gradual para imprevistos.'],
+  ['Deuda y crédito', 'Priorizar pagos y reducir presión financiera.'],
+]
 
 export default function LearnPage() {
-  const progress = readStorage(STORAGE_KEYS.learning, {})
-  const completed = Object.values(progress).filter((item) => item.completed).length
-  const started = Object.values(progress).filter((item) => item.started).length
-  const totalMinutes = learningModules.reduce((sum, module) => sum + module.estimatedMinutes, 0)
-
   return (
     <div className="k-page">
-      <section className="k-shell relative overflow-hidden bg-[#071832] p-6 text-white">
-        <div className="k-landscape opacity-20" />
-        <div className="relative z-10">
-          <p className="text-sm font-bold text-emerald-200">Academia financiera</p>
-          <h1 className="k-display mt-2 text-4xl text-white">Aprenda a su ritmo</h1>
-          <p className="mt-3 max-w-2xl leading-7 text-slate-300">Módulos prácticos conectados a su snapshot financiero, diseñados para avanzar con claridad y sin presión.</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <Stat label="Módulos iniciados" value={`${started}`} icon={<BookOpen size={20} />} />
-            <Stat label="Módulos completados" value={`${completed}`} icon={<Award size={20} />} />
-            <Stat label="Tiempo total estimado" value={`${totalMinutes} min`} icon={<Clock size={20} />} />
-          </div>
+      <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_340px] lg:items-end">
+        <div>
+          <p className="k-eyebrow flex items-center gap-2"><Sparkles size={18} /> Próximamente</p>
+          <h1 className="k-display mt-3 text-5xl leading-tight md:text-6xl">Educación financiera conectada a su snapshot</h1>
+          <p className="k-copy mt-4 max-w-3xl text-lg">
+            En la siguiente fase, Katalyst podrá recomendar módulos educativos según las áreas de atención detectadas en el checkup.
+          </p>
+        </div>
+        <div className="k-soft-card p-5">
+          <LockKeyhole className="mb-4 text-emerald-700" />
+          <h2 className="font-bold text-slate-950">No hay progreso guardado todavía</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Esta sección es una vista de producto futuro. En la beta del lunes, el flujo real es checkup, snapshot y PDF.
+          </p>
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {learningModules.map((module, index) => {
-          const item = progress[module.id]
-          const isSoftLocked = index > completed + 2
-          return (
-            <article key={module.id} className="k-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">{module.badge}</span>
-                {isSoftLocked ? <Lock size={18} className="text-slate-300" /> : <Award size={18} className="text-emerald-600" />}
-              </div>
-              <h2 className="text-xl font-bold text-slate-950">{module.title}</h2>
-              <p className="mt-2 min-h-[72px] text-sm leading-6 text-slate-600">{module.description}</p>
-              <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-slate-500">
-                <span className="rounded-full bg-slate-100 px-2 py-1">{module.level}</span>
-                <span className="rounded-full bg-slate-100 px-2 py-1">{module.estimatedMinutes} min</span>
-                <span className="rounded-full bg-slate-100 px-2 py-1">{module.quizQuestions.length || 2} actividades</span>
-              </div>
-              <div className="mt-5 h-2 rounded-full bg-slate-100">
-                <div className="h-2 rounded-full bg-emerald-500" style={{ width: item?.completed ? '100%' : item?.started ? '45%' : '0%' }} />
-              </div>
-              <Link to={`/learn/${module.id}`} className="k-primary mt-5 inline-flex w-full">
-                {item?.completed ? 'Repasar' : item?.started ? 'Continuar' : 'Empezar'}
-              </Link>
-            </article>
-          )
-        })}
+      <section className="grid gap-4 md:grid-cols-3">
+        {upcomingModules.map(([title, copy]) => (
+          <article key={title} className="k-card p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="k-icon-tile"><BookOpen size={20} /></span>
+              <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">Próximamente</span>
+            </div>
+            <h2 className="text-xl font-bold text-slate-950">{title}</h2>
+            <p className="mt-2 min-h-[72px] text-sm leading-6 text-slate-600">{copy}</p>
+            <div className="mt-5 flex items-center gap-2 rounded-lg bg-stone-50 px-4 py-3 text-sm font-bold text-slate-500">
+              <Clock size={16} /> Disponible en una siguiente fase
+            </div>
+          </article>
+        ))}
       </section>
-    </div>
-  )
-}
 
-function Stat({ label, value, icon }) {
-  return (
-    <div className="rounded-lg bg-white/10 p-4">
-      <div className="mb-2 text-emerald-200">{icon}</div>
-      <p className="text-sm text-slate-300">{label}</p>
-      <p className="font-bold">{value}</p>
+      <section className="k-shell grid gap-4 p-6 md:grid-cols-[1fr_auto] md:items-center">
+        <div>
+          <h2 className="k-display text-3xl text-slate-950">La beta actual se enfoca en claridad inmediata.</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Complete el checkup para obtener su snapshot privado y descargar su reporte educativo de una sola sesión.
+          </p>
+        </div>
+        <Link to="/checkup" className="k-primary px-5 py-3">
+          Hacer mi checkup <ArrowRight size={16} />
+        </Link>
+      </section>
     </div>
   )
 }

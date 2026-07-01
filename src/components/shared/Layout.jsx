@@ -30,7 +30,7 @@ export default function Layout() {
             ))}
           </nav>
           <NavLink to="/login" className="hidden items-center gap-2 rounded-lg bg-[#071832] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-stone-300 md:inline-flex">
-            <UserRound size={16} /> Iniciar sesión
+            <UserRound size={16} /> Guardar progreso
           </NavLink>
         </div>
       </header>

@@ -14,6 +14,8 @@ let guestCheckupDraft = {}
 let guestLastSnapshot = null
 let guestSnapshotHistory = []
 
+const accountsEnabled = import.meta.env.VITE_ENABLE_ACCOUNTS === 'true'
+
 export function readStorage(key, fallback) {
   try {
     const value = localStorage.getItem(key)
@@ -94,10 +96,11 @@ export function persistSnapshotForAccount(snapshot = guestLastSnapshot) {
 }
 
 export function hasSnapshotSaveConsent() {
-  return Boolean(getLocalAccount()?.snapshotSaveConsent)
+  return accountsEnabled && Boolean(getLocalAccount()?.snapshotSaveConsent)
 }
 
 export function saveHelpRequest({ topic, message = '', user = getLocalAccount(), profile = getProfile() }) {
+  if (!accountsEnabled) return null
   const requests = readStorage(STORAGE_KEYS.helpRequests, [])
   const name = profile?.fullName || user?.name || 'Usuario Katalyst'
   const email = user?.email || 'sin-correo@katalyst.local'

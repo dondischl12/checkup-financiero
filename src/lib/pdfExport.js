@@ -2,6 +2,7 @@ import jsPDF from 'jspdf'
 import { format } from 'date-fns'
 import { checkupQuestionBank } from '../data/checkupQuestionBank'
 import { learningModules } from '../data/learningModules'
+import { BENCHMARKS } from './financialCalculations'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 const pct = new Intl.NumberFormat('es-MX', { style: 'percent', maximumFractionDigits: 0 })
@@ -271,10 +272,10 @@ function drawRatioTable(ctx, snapshot) {
   const m = snapshot.derivedMetrics
   const rows = [
     ['Flujo mensual neto', money.format(m.netFlow), 'Positivo', m.netFlow >= 0],
-    ['Tasa de ahorro', pct.format(m.savingsRate || 0), '≥ 15%', m.savingsRate >= 0.15],
-    ['Fondo de emergencia', `${m.emergencyMonths.toFixed(1)} meses`, '3-6 meses', m.emergencyMonths >= 3],
-    ['Relación deuda/ingresos', pct.format(m.debtToIncome || 0), '< 30%', m.debtToIncome < 0.3],
-    ['Vivienda/ingreso', pct.format(m.housingRatio || 0), '≤ 25%', m.housingRatio <= 0.25],
+    ['Tasa de ahorro', pct.format(m.savingsRate || 0), BENCHMARKS.savingsRate.label, BENCHMARKS.savingsRate.pass(m.savingsRate)],
+    ['Fondo de emergencia', `${m.emergencyMonths.toFixed(1)} meses`, BENCHMARKS.emergencyMonths.label, BENCHMARKS.emergencyMonths.pass(m.emergencyMonths)],
+    ['Deuda no hipotecaria/ingresos', pct.format(m.debtToIncome || 0), BENCHMARKS.debtToIncome.label, BENCHMARKS.debtToIncome.pass(m.debtToIncome)],
+    ['Vivienda/ingreso', pct.format(m.housingRatio || 0), BENCHMARKS.housingRatio.label, BENCHMARKS.housingRatio.pass(m.housingRatio)],
   ]
   drawTable(ctx, ['Métrica', 'Actual', 'Guía', 'Estado'], rows.map(([a, b, c, pass]) => [a, b, c, pass ? 'Bien' : 'Atención']), [58, 42, 42, 32])
 }
@@ -413,7 +414,7 @@ function drawTable(ctx, headers, rows, widths) {
     pdf.text(header, x + 3, ctx.y + 6)
     x += widths[index]
   })
-  ctx.y += 10
+  ctx.y += 13
   rows.forEach((row) => {
     if (ctx.y > 270) {
       drawFooter(ctx)
@@ -475,5 +476,11 @@ function formatAnswer(question, value) {
 }
 
 function wrap(pdf, text, width) {
-  return pdf.splitTextToSize(String(text || ''), width)
+  // jsPDF's built-in Helvetica lacks the math glyphs ≥/≤ and the typographic
+  // minus/en-dash, which render as garbage. Map them to safe ASCII equivalents.
+  const clean = String(text || '')
+    .replace(/≥/g, '>=')
+    .replace(/≤/g, '<=')
+    .replace(/[−–]/g, '-')
+  return pdf.splitTextToSize(clean, width)
 }

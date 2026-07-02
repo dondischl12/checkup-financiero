@@ -2,10 +2,10 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { BarChart3, BookOpen, ClipboardCheck, Home, UserRound } from 'lucide-react'
 
 const navItems = [
-  ['/', 'Inicio', Home],
-  ['/checkup', 'Checkup', ClipboardCheck],
-  ['/learn', 'Aprender', BookOpen],
-  ['/events', 'Recursos', BarChart3],
+  { to: '/', label: 'Inicio', icon: Home },
+  { to: '/checkup', label: 'Checkup', icon: ClipboardCheck },
+  { to: '/learn', label: 'Aprender', icon: BookOpen, badge: 'Próx.' },
+  { to: '/events', label: 'Recursos', icon: BarChart3, badge: 'Próx.' },
 ]
 
 export default function Layout() {
@@ -22,15 +22,16 @@ export default function Layout() {
             KATALYST
           </NavLink>
           <nav className="flex gap-1 overflow-x-auto pb-1 lg:pb-0">
-            {navItems.map(([to, label, Icon]) => (
+            {navItems.map(({ to, label, icon: Icon, badge }) => (
               <NavLink key={to} to={to} end={to === '/'} className={linkClass}>
                 <Icon size={16} />
                 {label}
+                {badge && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black uppercase text-amber-700">{badge}</span>}
               </NavLink>
             ))}
           </nav>
           <NavLink to="/login" className="hidden items-center gap-2 rounded-lg bg-[#071832] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-stone-300 md:inline-flex">
-            <UserRound size={16} /> Guardar progreso
+            <UserRound size={16} /> Guardar progreso <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] uppercase">Próx.</span>
           </NavLink>
         </div>
       </header>
@@ -41,7 +42,7 @@ export default function Layout() {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
           <p className="text-xl font-black tracking-[0.22em] text-slate-950">KATALYST</p>
           <p>Tecnología y educación financiera al servicio de comunidades fuertes.</p>
-          <p>Privacidad / Términos / Ayuda</p>
+          <NavLink to="/privacy" className="font-bold text-slate-600 hover:text-slate-950">Privacidad beta</NavLink>
         </div>
       </footer>
     </div>

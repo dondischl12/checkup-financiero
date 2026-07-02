@@ -57,8 +57,8 @@ export default function LandingPage() {
             <Link to="/checkup" className="k-primary px-6 py-4">
               Hacer mi checkup <ArrowRight size={18} />
             </Link>
-            <Link to="/snapshot" className="k-secondary px-6 py-4">
-              Ver snapshot
+            <Link to="/privacy" className="k-secondary px-6 py-4">
+              Privacidad beta
             </Link>
           </div>
         </div>

@@ -374,23 +374,38 @@ export function getLevel(score) {
   return { label: 'Atención prioritaria', tone: 'Prioridad', summary: 'Conviene enfocarse en claridad, flujo mensual y apoyo educativo paso a paso.' }
 }
 
+/**
+ * Single source of truth for the planning benchmarks shown to users and used to
+ * flag strengths/attention areas. Kept consistent with the score anchors:
+ *   - savingsRate: 50/30/20 healthy target.
+ *   - emergencyMonths: 3-6 months of essential expenses.
+ *   - housingRatio: 28/36 rule, conservative 25% front-end target.
+ *   - debtToIncome: 20/10 rule (non-mortgage consumer debt payments).
+ */
+export const BENCHMARKS = {
+  savingsRate: { target: 0.15, label: '≥ 15%', note: 'Ahorro / ingreso mensual', pass: (v) => v >= 0.15 },
+  emergencyMonths: { target: 3, label: '3–6 meses', note: 'Gastos esenciales cubiertos', pass: (v) => v >= 3 },
+  housingRatio: { target: 0.25, label: '≤ 25%', note: 'Vivienda / ingreso', pass: (v) => v <= 0.25 },
+  debtToIncome: { target: 0.2, label: '≤ 20%', note: 'Pagos de deuda no hipotecaria / ingreso', pass: (v) => v <= 0.2 },
+}
+
 export function getStrengths(metrics = {}) {
   const strengths = []
   if (metrics.netFlow > 0) strengths.push('Mantiene un flujo mensual positivo entre ingresos y gastos.')
   if (metrics.savingsRate >= 0.15) strengths.push('Su tasa de ahorro está alineada con una guía saludable.')
   if (metrics.emergencyMonths >= 1) strengths.push('Ya cuenta con un fondo de emergencia iniciado.')
-  if (metrics.debtToIncome <= 0.25) strengths.push('Sus pagos de deuda se mantienen en un rango manejable.')
-  if (metrics.housingRatio <= 0.25 && metrics.housing > 0) strengths.push('Su gasto en vivienda está cerca de la guía recomendada.')
+  if (BENCHMARKS.debtToIncome.pass(metrics.debtToIncome)) strengths.push('Sus pagos de deuda se mantienen en un rango manejable.')
+  if (BENCHMARKS.housingRatio.pass(metrics.housingRatio) && metrics.housing > 0) strengths.push('Su gasto en vivienda está cerca de la guía recomendada.')
   return strengths.length ? strengths : ['Completó un snapshot que le da claridad para tomar mejores decisiones.']
 }
 
 export function getAttentionAreas(metrics = {}) {
   const areas = []
   if (metrics.netFlow < 0) areas.push('Sus gastos superan sus ingresos mensuales; revisar prioridades puede liberar flujo.')
-  if (metrics.savingsRate < 0.15) areas.push('Puede fortalecer su hábito de ahorro mensual de forma gradual.')
-  if (metrics.emergencyMonths < 3) areas.push('Su fondo de emergencia aún puede crecer hacia 3 a 6 meses de gastos esenciales.')
-  if (metrics.debtToIncome > 0.3) areas.push('Sus pagos de deuda ocupan una parte relevante del ingreso mensual.')
-  if (metrics.housingRatio > 0.25) areas.push('Su gasto en vivienda supera la guía de referencia del 25% del ingreso.')
+  if (!BENCHMARKS.savingsRate.pass(metrics.savingsRate)) areas.push('Puede fortalecer su hábito de ahorro mensual de forma gradual.')
+  if (!BENCHMARKS.emergencyMonths.pass(metrics.emergencyMonths)) areas.push('Su fondo de emergencia aún puede crecer hacia 3 a 6 meses de gastos esenciales.')
+  if (!BENCHMARKS.debtToIncome.pass(metrics.debtToIncome)) areas.push('Sus pagos de deuda no hipotecaria ocupan una parte relevante del ingreso mensual.')
+  if (!BENCHMARKS.housingRatio.pass(metrics.housingRatio)) areas.push('Su gasto en vivienda supera la guía de referencia del 25% del ingreso.')
   return areas.length ? areas : ['Mantenga revisiones mensuales para sostener el progreso y anticipar cambios.']
 }
 

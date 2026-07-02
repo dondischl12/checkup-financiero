@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ArrowLeft, Home, PiggyBank, Scale, ShieldCheck, TrendingUp, UserRound } from 'lucide-react'
 import { getLastSnapshot, getSnapshotHistory } from '../utils/storage'
+import { BENCHMARKS } from '../lib/financialCalculations'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 const betaPrivacyCopy = 'En esta beta sin cuenta, este análisis no se guarda en una base de datos y se borra al actualizar la página.'
@@ -83,10 +84,10 @@ export default function SnapshotAnalysisPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <Ratio icon={<Scale />} title="Relación deuda/ingresos" value={`${Math.round(metrics.debtToIncome * 100)}%`} target="Objetivo: < 30%" pass={metrics.debtToIncome <= 0.3} />
-        <Ratio icon={<PiggyBank />} title="Tasa de ahorro" value={`${Math.round(metrics.savingsRate * 100)}%`} target="Objetivo: ≥ 15%" pass={metrics.savingsRate >= 0.15} />
-        <Ratio icon={<ShieldCheck />} title="Fondo de emergencia" value={`${metrics.emergencyMonths.toFixed(1)} meses`} target="Rango ideal: 3–6 meses" pass={metrics.emergencyMonths >= 3} />
-        <Ratio icon={<Home />} title="Gasto en vivienda" value={`${Math.round(metrics.housingRatio * 100)}%`} target="Objetivo: ≤ 25%" pass={metrics.housingRatio <= 0.25} />
+        <Ratio icon={<Scale />} title="Deuda no hipotecaria / ingresos" value={`${Math.round(metrics.debtToIncome * 100)}%`} target={`Objetivo: ${BENCHMARKS.debtToIncome.label}`} pass={BENCHMARKS.debtToIncome.pass(metrics.debtToIncome)} />
+        <Ratio icon={<PiggyBank />} title="Tasa de ahorro" value={`${Math.round(metrics.savingsRate * 100)}%`} target={`Objetivo: ${BENCHMARKS.savingsRate.label}`} pass={BENCHMARKS.savingsRate.pass(metrics.savingsRate)} />
+        <Ratio icon={<ShieldCheck />} title="Fondo de emergencia" value={`${metrics.emergencyMonths.toFixed(1)} meses`} target={`Rango ideal: ${BENCHMARKS.emergencyMonths.label}`} pass={BENCHMARKS.emergencyMonths.pass(metrics.emergencyMonths)} />
+        <Ratio icon={<Home />} title="Gasto en vivienda" value={`${Math.round(metrics.housingRatio * 100)}%`} target={`Objetivo: ${BENCHMARKS.housingRatio.label}`} pass={BENCHMARKS.housingRatio.pass(metrics.housingRatio)} />
         <Ratio icon={<TrendingUp />} title="Flujo mensual neto" value={money.format(metrics.netFlow)} target="Ingresos − gastos" pass={metrics.netFlow >= 0} />
       </section>
 
@@ -135,10 +136,10 @@ function AnnualCard({ label, value }) {
 
 function Benchmarks({ metrics }) {
   const rows = [
-    ['Gasto en vivienda', `${Math.round(metrics.housingRatio * 100)}%`, '≤ 25%', metrics.housingRatio <= 0.25],
-    ['Tasa de ahorro', `${Math.round(metrics.savingsRate * 100)}%`, '≥ 15%', metrics.savingsRate >= 0.15],
-    ['Fondo de emergencia', `${metrics.emergencyMonths.toFixed(1)} meses`, '3–6 meses', metrics.emergencyMonths >= 3],
-    ['Relación deuda/ingresos', `${Math.round(metrics.debtToIncome * 100)}%`, '< 30%', metrics.debtToIncome <= 0.3],
+    ['Gasto en vivienda', `${Math.round(metrics.housingRatio * 100)}%`, BENCHMARKS.housingRatio.label, BENCHMARKS.housingRatio.pass(metrics.housingRatio)],
+    ['Tasa de ahorro', `${Math.round(metrics.savingsRate * 100)}%`, BENCHMARKS.savingsRate.label, BENCHMARKS.savingsRate.pass(metrics.savingsRate)],
+    ['Fondo de emergencia', `${metrics.emergencyMonths.toFixed(1)} meses`, BENCHMARKS.emergencyMonths.label, BENCHMARKS.emergencyMonths.pass(metrics.emergencyMonths)],
+    ['Deuda no hipotecaria / ingresos', `${Math.round(metrics.debtToIncome * 100)}%`, BENCHMARKS.debtToIncome.label, BENCHMARKS.debtToIncome.pass(metrics.debtToIncome)],
   ]
   return (
     <article className="k-card p-5">

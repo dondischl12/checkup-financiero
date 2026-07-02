@@ -9,7 +9,7 @@ export default function LoginPage() {
         <div className="relative z-10">
           <UserRound size={34} className="mb-6 text-emerald-200" />
           <p className="mb-3 text-sm font-bold uppercase text-emerald-200">Próximamente</p>
-          <h1 className="k-display mb-4 text-4xl leading-tight text-white">Guardar progreso con consentimiento</h1>
+          <h1 className="k-display mb-4 text-3xl leading-tight text-white sm:text-4xl">Guardar progreso con consentimiento</h1>
           <p className="leading-7 text-slate-300">
             Las cuentas permitirán comparar snapshots en el tiempo cuando el usuario decida guardar su historial. No forman parte de la beta actual.
           </p>
@@ -18,7 +18,7 @@ export default function LoginPage() {
 
       <section className="k-card p-8">
         <div className="mb-6">
-          <h2 className="k-display text-3xl">Cuenta opcional en una siguiente fase</h2>
+          <h2 className="k-display text-2xl sm:text-3xl">Cuenta opcional en una siguiente fase</h2>
           <p className="mt-2 text-sm leading-6 text-slate-500">
             Por ahora, el checkup funciona como snapshot de una sola sesión. Sin cuenta, las respuestas no se guardan en una base de datos y se borran al actualizar la página.
           </p>

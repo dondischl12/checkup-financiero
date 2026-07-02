@@ -15,7 +15,7 @@ export default function SnapshotPage() {
   if (!snapshot) {
     return (
       <div className="mx-auto max-w-2xl rounded-lg border border-stone-200 bg-white p-10 text-center shadow-xl shadow-stone-200">
-        <h1 className="k-display text-4xl text-slate-950">Aún no tiene snapshot</h1>
+        <h1 className="k-display text-3xl text-slate-950 sm:text-4xl">Aún no tiene snapshot</h1>
         <p className="mt-3 text-slate-600">Complete el checkup privado para generar su score, reporte y plan de acción.</p>
         <Link to="/checkup" className="mt-6 inline-flex rounded-lg bg-slate-950 px-6 py-3 font-bold text-white">
           Hacer mi checkup
@@ -34,7 +34,7 @@ export default function SnapshotPage() {
           <p className="k-eyebrow flex items-center gap-2">
             <ShieldCheck size={18} /> Snapshot completado / {new Date(snapshot.createdAt).toLocaleDateString('es-MX')}
           </p>
-          <h1 className="k-display mt-3 text-5xl leading-tight md:text-6xl">Su snapshot financiero</h1>
+          <h1 className="k-display mt-3 text-3xl leading-tight sm:text-4xl md:text-5xl lg:text-6xl">Su snapshot financiero</h1>
           <p className="k-copy mt-3 max-w-2xl text-lg">
             Un resumen privado y accionable de su situación financiera. Úselo para tomar mejores decisiones y avanzar con claridad.
           </p>
@@ -198,9 +198,9 @@ async function downloadPdf(snapshot, history) {
 function ScoreRing({ score }) {
   const degrees = `${Math.round((Math.max(0, Math.min(100, score)) / 100) * 360)}deg`
   return (
-    <div className="k-score-ring h-64 w-64" style={{ '--score-deg': degrees }}>
+    <div className="k-score-ring h-52 w-52 sm:h-64 sm:w-64" style={{ '--score-deg': degrees }}>
       <div>
-        <p className="text-7xl font-bold text-slate-950">{score}</p>
+        <p className="text-6xl font-bold text-slate-950 sm:text-7xl">{score}</p>
         <p className="text-lg font-bold text-slate-500">/100</p>
       </div>
     </div>

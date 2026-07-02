@@ -16,7 +16,7 @@ export default function ActionPlanPage() {
       </section>
 
       <section className="k-scenic-hero p-6">
-        <h1 className="k-display text-5xl text-slate-950">Su plan de acción</h1>
+        <h1 className="k-display text-3xl text-slate-950 sm:text-4xl md:text-5xl">Su plan de acción</h1>
         <p className="mt-3 max-w-2xl text-lg leading-8 text-slate-600">Un plan personalizado de 30 días para avanzar hacia sus metas con pasos pequeños y sostenibles.</p>
       </section>
 

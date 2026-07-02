@@ -7,7 +7,7 @@ export default function AdminPage() {
       <section className="k-scenic-hero p-8">
         <div className="k-icon-tile mb-5"><BarChart3 size={24} /></div>
         <p className="k-eyebrow">Próximamente / uso interno</p>
-        <h1 className="k-display mt-3 text-5xl text-slate-950">Panel agregado de impacto</h1>
+        <h1 className="k-display mt-3 text-3xl text-slate-950 sm:text-4xl md:text-5xl">Panel agregado de impacto</h1>
         <p className="k-copy mt-4 max-w-3xl">
           En una fase futura, Katalyst podrá consultar métricas agregadas para entender necesidades de la comunidad sin ver respuestas financieras individuales.
         </p>

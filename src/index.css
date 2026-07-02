@@ -208,9 +208,10 @@
   }
 
   .k-display {
-    @apply font-bold leading-none;
+    @apply font-bold leading-[1.08];
     color: var(--katalyst-navy);
     letter-spacing: 0;
+    overflow-wrap: break-word;
   }
 
   .k-copy {

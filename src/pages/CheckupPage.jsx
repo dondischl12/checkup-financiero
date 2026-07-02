@@ -74,7 +74,7 @@ export default function CheckupPage() {
           <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_0.65fr] lg:items-end">
             <div>
               <p className="k-eyebrow">Checkup privado local</p>
-              <h1 className="k-display mt-3 text-5xl leading-tight md:text-6xl">
+              <h1 className="k-display mt-3 text-3xl leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
                 Cuéntenos sobre su situación actual
               </h1>
             </div>
@@ -87,7 +87,7 @@ export default function CheckupPage() {
             <div className="mb-5 flex items-start justify-between gap-4 border-b border-stone-100 pb-5">
               <div>
                 <p className="k-eyebrow">Paso {sectionIndex + 1} de {sections.length}</p>
-                <h2 className="k-display mt-1 text-3xl">{current.title}</h2>
+                <h2 className="k-display mt-1 text-2xl sm:text-3xl">{current.title}</h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{current.purpose}</p>
               </div>
               <span className="hidden rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800 sm:inline-flex">
@@ -170,24 +170,39 @@ function visibleSections(sections, answers) {
 }
 
 function Stepper({ sections, active }) {
+  const pct = Math.round(((active + 1) / sections.length) * 100)
   return (
-    <div className="overflow-x-auto pb-2">
-      <div className="flex min-w-[760px] items-center">
-        {sections.map((section, index) => {
-          const complete = index < active
-          const activeStep = index === active
-          return (
-            <div key={section.id} className="flex flex-1 items-center">
-              <div className="flex flex-col items-center gap-2">
-                <span className={`grid h-9 w-9 place-items-center rounded-full border text-sm font-bold ${complete ? 'border-emerald-700 bg-emerald-700 text-white' : activeStep ? 'border-emerald-700 bg-emerald-50 text-emerald-800' : 'border-stone-300 bg-white text-slate-500'}`}>
-                  {complete ? <Check size={16} /> : index + 1}
-                </span>
-                <span className={`max-w-24 truncate text-xs font-bold ${activeStep ? 'text-emerald-800' : 'text-slate-500'}`}>{shortTitle(section.title)}</span>
+    <div>
+      {/* Mobile: compact progress bar instead of a 760px horizontal scroll */}
+      <div className="md:hidden">
+        <div className="mb-2 flex items-center justify-between gap-3 text-sm font-bold">
+          <span className="text-emerald-800">Paso {active + 1} de {sections.length}</span>
+          <span className="truncate text-slate-500">{shortTitle(sections[active]?.title || '')}</span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-stone-200">
+          <div className="h-full rounded-full bg-emerald-700 transition-all duration-300" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+
+      {/* Desktop: full step rail */}
+      <div className="hidden overflow-x-auto pb-2 md:block">
+        <div className="flex min-w-[760px] items-center">
+          {sections.map((section, index) => {
+            const complete = index < active
+            const activeStep = index === active
+            return (
+              <div key={section.id} className="flex flex-1 items-center">
+                <div className="flex flex-col items-center gap-2">
+                  <span className={`grid h-9 w-9 place-items-center rounded-full border text-sm font-bold ${complete ? 'border-emerald-700 bg-emerald-700 text-white' : activeStep ? 'border-emerald-700 bg-emerald-50 text-emerald-800' : 'border-stone-300 bg-white text-slate-500'}`}>
+                    {complete ? <Check size={16} /> : index + 1}
+                  </span>
+                  <span className={`max-w-24 truncate text-xs font-bold ${activeStep ? 'text-emerald-800' : 'text-slate-500'}`}>{shortTitle(section.title)}</span>
+                </div>
+                {index < sections.length - 1 && <span className={`mx-3 h-px flex-1 ${index < active ? 'bg-emerald-700' : 'bg-stone-200'}`} />}
               </div>
-              {index < sections.length - 1 && <span className={`mx-3 h-px flex-1 ${index < active ? 'bg-emerald-700' : 'bg-stone-200'}`} />}
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
     </div>
   )
@@ -232,7 +247,7 @@ function QuestionField({ question, value, onChange }) {
 
   return (
     <label className="k-card grid gap-4 p-4 sm:grid-cols-[72px_1fr_240px] sm:items-center">
-      <span className="k-icon-tile h-16 w-16">
+      <span className="k-icon-tile hidden h-16 w-16 sm:grid">
         <Icon size={26} />
       </span>
       <span>
@@ -279,7 +294,7 @@ function PreviewCard({ snapshot }) {
       <div className="my-6 text-center">
         <div className="k-score-ring mx-auto h-40 w-40" style={{ '--score-deg': degrees }}>
           <div>
-            <p className="text-5xl font-bold text-slate-950">{snapshot.score}</p>
+            <p className="text-4xl font-bold text-slate-950 sm:text-5xl">{snapshot.score}</p>
             <p className="text-sm font-bold text-slate-500">/100</p>
           </div>
         </div>

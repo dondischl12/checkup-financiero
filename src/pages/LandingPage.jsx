@@ -46,7 +46,7 @@ export default function LandingPage() {
       <section className="grid min-h-[calc(100dvh-8rem)] min-w-0 gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
         <div className="min-w-0 py-4">
           <p className="k-eyebrow">Bienestar financiero, sin fricción</p>
-          <h1 className="k-display mt-5 max-w-xl text-5xl leading-[0.98] md:text-6xl xl:text-[4.65rem]">
+          <h1 className="k-display mt-5 max-w-xl text-4xl leading-[1.04] sm:text-5xl md:text-6xl xl:text-[4.65rem]">
             <span className="block">Checkup</span>
             <span className="block">financiero</span>
           </h1>
@@ -70,7 +70,7 @@ export default function LandingPage() {
 
       <section className="space-y-6">
         <div className="max-w-2xl">
-          <h2 className="k-display text-4xl md:text-5xl">Del checkup al plan.</h2>
+          <h2 className="k-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Del checkup al plan.</h2>
           <p className="k-copy mt-4 text-lg">
             La experiencia completa está pensada como un recorrido educativo, no como una app bancaria intimidante.
           </p>
@@ -85,7 +85,7 @@ export default function LandingPage() {
       <section className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
         <BrowserFrame title="Learning path" image={screenshot('learning')} />
         <div className="space-y-5">
-          <h2 className="k-display text-4xl md:text-5xl">Educación como siguiente fase.</h2>
+          <h2 className="k-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Educación como siguiente fase.</h2>
           <p className="k-copy text-lg">
             El snapshot ya puede sugerir temas educativos. Los módulos, recursos y calendario quedan marcados como próximamente para no simular funcionalidad activa.
           </p>
@@ -105,7 +105,7 @@ export default function LandingPage() {
           <div className="k-icon-tile">
             <BookOpen size={22} />
           </div>
-          <h2 className="k-display mt-5 text-4xl">Motor explicable.</h2>
+          <h2 className="k-display mt-5 text-2xl sm:text-3xl md:text-4xl">Motor explicable.</h2>
           <p className="k-copy mt-4">
             La metodología evalúa flujo mensual, ahorro, deuda, vivienda, fondo de emergencia, dependientes y hábitos.
           </p>
@@ -124,7 +124,7 @@ export default function LandingPage() {
       <section className="grid gap-6 lg:grid-cols-[1.12fr_0.88fr] lg:items-center">
         <BrowserFrame title="Action plan" image={screenshot('action')} />
         <div className="space-y-5">
-          <h2 className="k-display text-4xl md:text-5xl">Acompañamiento después del reporte.</h2>
+          <h2 className="k-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Acompañamiento después del reporte.</h2>
           <p className="k-copy text-lg">
             Después del snapshot, la beta ayuda a convertir claridad financiera en pasos pequeños. Recursos, eventos y seguimiento quedan listos como visión de producto.
           </p>
@@ -138,7 +138,7 @@ export default function LandingPage() {
 
       <section className="k-shell grid gap-6 p-6 md:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
         <div>
-          <h2 className="k-display text-3xl md:text-4xl">Una primera conversación financiera, sin juicio.</h2>
+          <h2 className="k-display text-2xl sm:text-3xl md:text-4xl">Una primera conversación financiera, sin juicio.</h2>
           <p className="k-copy mt-3 max-w-2xl">
             Hecho para educación comunitaria, privacidad práctica y una ruta clara hacia apoyo humano cuando se necesita.
           </p>
@@ -185,7 +185,7 @@ function TrustBento() {
     <section className="grid-flow-dense grid gap-4 lg:grid-cols-4">
       <article className="k-card k-hover-lift p-6 lg:col-span-2">
         <ShieldCheck className="text-emerald-700" size={26} />
-        <h2 className="k-display mt-5 max-w-lg text-4xl">Diseñado para confianza antes que captura.</h2>
+        <h2 className="k-display mt-5 max-w-lg text-2xl sm:text-3xl md:text-4xl">Diseñado para confianza antes que captura.</h2>
         <p className="k-copy mt-4 max-w-xl">
           El checkup funciona en modo invitado como snapshot de una sola sesión. Guardar progreso será una fase posterior con consentimiento.
         </p>

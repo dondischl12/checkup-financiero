@@ -20,7 +20,7 @@ export default function SnapshotAnalysisPage() {
       <Link to="/snapshot" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800"><ArrowLeft size={16} /> Volver al snapshot</Link>
       <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_360px] lg:items-end">
         <div>
-          <h1 className="k-display text-5xl">Análisis detallado de su snapshot</h1>
+          <h1 className="k-display text-3xl sm:text-4xl md:text-5xl">Análisis detallado de su snapshot</h1>
           <p className="k-copy mt-3 max-w-3xl text-lg">Profundizamos en sus datos para comparar ratios con guías recomendadas y convertirlos en acciones concretas.</p>
         </div>
         <div className="k-soft-card p-5 text-sm font-bold text-emerald-900">

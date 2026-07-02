@@ -7,7 +7,7 @@ export default function LearnModulePage() {
       <section className="k-scenic-hero p-8">
         <div className="k-icon-tile mb-5"><BookOpen size={24} /></div>
         <p className="k-eyebrow">Próximamente</p>
-        <h1 className="k-display mt-3 text-5xl text-slate-950">Módulos educativos en preparación</h1>
+        <h1 className="k-display mt-3 text-3xl text-slate-950 sm:text-4xl md:text-5xl">Módulos educativos en preparación</h1>
         <p className="k-copy mt-4 max-w-2xl">
           En esta beta no hay lecciones, quizzes ni progreso activo. Los módulos se conectarán al snapshot cuando la fase educativa esté lista.
         </p>

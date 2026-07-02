@@ -13,7 +13,7 @@ export default function EventsPage() {
       <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_340px] lg:items-end">
         <div>
           <p className="k-eyebrow flex items-center gap-2"><CalendarDays size={18} /> Próximamente</p>
-          <h1 className="k-display mt-3 text-5xl leading-tight md:text-6xl">Recursos y calendario Katalyst</h1>
+          <h1 className="k-display mt-3 text-3xl leading-tight sm:text-4xl md:text-5xl lg:text-6xl">Recursos y calendario Katalyst</h1>
           <p className="k-copy mt-4 max-w-3xl text-lg">
             Esta sección mostrará talleres, recursos y espacios de apoyo conectados a las necesidades más comunes detectadas por el checkup.
           </p>
@@ -42,7 +42,7 @@ export default function EventsPage() {
 
       <section className="k-shell grid gap-4 p-6 md:grid-cols-[1fr_auto] md:items-center">
         <div>
-          <h2 className="k-display text-3xl text-slate-950">Primero, claridad financiera.</h2>
+          <h2 className="k-display text-2xl text-slate-950 sm:text-3xl">Primero, claridad financiera.</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             Complete el checkup para generar un reporte privado. Los recursos comunitarios se conectarán a este resultado en una siguiente fase.
           </p>

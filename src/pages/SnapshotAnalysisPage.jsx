@@ -3,10 +3,9 @@ import { Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAx
 import { ArrowLeft, Home, PiggyBank, Scale, ShieldCheck, TrendingUp, UserRound } from 'lucide-react'
 import { getLastSnapshot, getSnapshotHistory } from '../utils/storage'
 import { BENCHMARKS } from '../lib/financialCalculations'
+import { betaPrivacyCopy, betaReviewCopy } from '../lib/betaCopy'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
-const betaPrivacyCopy = 'En esta beta sin cuenta, este análisis no se guarda en una base de datos y se borra al actualizar la página.'
-
 export default function SnapshotAnalysisPage() {
   const snapshot = getLastSnapshot()
   if (!snapshot) return <EmptyState />
@@ -24,7 +23,7 @@ export default function SnapshotAnalysisPage() {
           <p className="k-copy mt-3 max-w-3xl text-lg">Profundizamos en sus datos para comparar ratios con guías recomendadas y convertirlos en acciones concretas.</p>
         </div>
         <div className="k-soft-card p-5 text-sm font-bold text-emerald-900">
-          Solo usted ve este análisis individual. {betaPrivacyCopy} *Mensaje pendiente de revisión legal.
+          Solo usted ve este análisis individual. {betaPrivacyCopy} {betaReviewCopy}
         </div>
       </section>
 

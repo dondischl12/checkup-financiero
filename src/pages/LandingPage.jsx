@@ -37,7 +37,7 @@ const productFlow = [
 const capabilityRows = [
   ['Entrada', 'Respuestas del hogar, ingresos, gastos, deuda, ahorro y hábitos'],
   ['Cálculo', 'Motor determinístico con ratios explicables y recomendaciones'],
-  ['Salida', 'Score, snapshot, PDF, plan de 30 días y roadmap educativo'],
+  ['Salida', 'Score, snapshot, PDF, plan de 30 días y módulos educativos iniciales'],
 ]
 
 export default function LandingPage() {
@@ -85,9 +85,9 @@ export default function LandingPage() {
       <section className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
         <BrowserFrame title="Learning path" image={screenshot('learning')} />
         <div className="space-y-5">
-          <h2 className="k-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Educación como siguiente fase.</h2>
+          <h2 className="k-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Educación inicial conectada al score.</h2>
           <p className="k-copy text-lg">
-            El snapshot ya puede sugerir temas educativos. Los módulos, recursos y calendario quedan marcados como próximamente para no simular funcionalidad activa.
+            La beta incluye módulos interactivos de presupuesto, fondo de emergencia y deuda. Recursos, calendario e historial quedan marcados como próximamente.
           </p>
           <div className="grid gap-3">
             <LearningRow title="Presupuesto" copy="Organizar flujo mensual y gastos variables." />
@@ -95,7 +95,7 @@ export default function LandingPage() {
             <LearningRow title="Deuda" copy="Priorizar pagos y reducir presión financiera." />
           </div>
           <Link to="/learn" className="k-secondary inline-flex">
-            Ver próximos módulos <ArrowRight size={16} />
+            Ver módulos <ArrowRight size={16} />
           </Link>
         </div>
       </section>
@@ -131,7 +131,7 @@ export default function LandingPage() {
           <div className="grid gap-3">
             <ArchitectureLine title="Modo invitado" copy="Complete el checkup y descargue su PDF sin crear cuenta." />
             <ArchitectureLine title="Progreso opcional" copy="Próximamente: guardar snapshots sólo con consentimiento." />
-            <ArchitectureLine title="Recursos Katalyst" copy="Próximamente: módulos, eventos y recursos conectados al resultado." />
+            <ArchitectureLine title="Recursos Katalyst" copy="Próximamente: eventos y recursos conectados al resultado." />
           </div>
         </div>
       </section>

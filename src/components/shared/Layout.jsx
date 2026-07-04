@@ -4,7 +4,7 @@ import { BarChart3, BookOpen, ClipboardCheck, Home, UserRound } from 'lucide-rea
 const navItems = [
   { to: '/', label: 'Inicio', icon: Home },
   { to: '/checkup', label: 'Checkup', icon: ClipboardCheck },
-  { to: '/learn', label: 'Aprender', icon: BookOpen, badge: 'Próx.' },
+  { to: '/learn', label: 'Aprender', icon: BookOpen },
   { to: '/events', label: 'Recursos', icon: BarChart3, badge: 'Próx.' },
 ]
 

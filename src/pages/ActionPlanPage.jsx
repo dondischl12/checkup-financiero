@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, CalendarDays, CheckCircle2, Flame, Target, Trophy } from 'lucide-react'
+import { liveModuleIds } from '../data/learningContent'
 import { learningModules } from '../data/learningModules'
 import { getLastSnapshot } from '../utils/storage'
 
@@ -62,15 +63,22 @@ export default function ActionPlanPage() {
       <section className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
         <article className="k-card p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-bold text-slate-950">Módulos recomendados próximamente</h2>
-            <Link to="/learn" className="text-sm font-bold text-emerald-800">Ver roadmap</Link>
+            <h2 className="font-bold text-slate-950">Módulos recomendados</h2>
+            <Link to="/learn" className="text-sm font-bold text-emerald-800">Ver módulos</Link>
           </div>
           <div className="grid gap-3 md:grid-cols-3">
             {modules.map((module) => (
               <article key={module.id} className="rounded-lg border border-stone-200 p-4">
-                <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">Próximamente</span>
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${liveModuleIds.includes(module.id) ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-700'}`}>
+                  {liveModuleIds.includes(module.id) ? 'Disponible' : 'Próximamente'}
+                </span>
                 <h3 className="font-bold text-slate-950">{module.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{module.description}</p>
+                {liveModuleIds.includes(module.id) && (
+                  <Link to={`/learn/${module.id}`} className="mt-3 inline-flex text-sm font-bold text-emerald-800">
+                    Abrir módulo <ArrowRight size={16} />
+                  </Link>
+                )}
               </article>
             ))}
           </div>

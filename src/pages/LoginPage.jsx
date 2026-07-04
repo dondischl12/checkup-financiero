@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react'
+import { betaReviewCopy } from '../lib/betaCopy'
 
 export default function LoginPage() {
   return (
@@ -22,7 +23,7 @@ export default function LoginPage() {
           <p className="mt-2 text-sm leading-6 text-slate-500">
             Por ahora, el checkup funciona como snapshot de una sola sesión. Sin cuenta, las respuestas no se guardan en una base de datos y se borran al actualizar la página.
           </p>
-          <p className="mt-3 text-xs font-semibold text-slate-500">*Mensaje pendiente de revisión legal.</p>
+          <p className="mt-3 text-xs font-semibold text-slate-500">{betaReviewCopy}</p>
         </div>
         <div className="grid gap-3">
           {[

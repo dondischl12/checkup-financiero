@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ArrowRight, Bookmark, Download, LockKeyhole, MessageCircle, ShieldCheck, TrendingUp, UserRound } from 'lucide-react'
 import { learningModules } from '../data/learningModules'
+import { liveModuleIds } from '../data/learningContent'
+import { betaPrivacyCopy, betaPrivacyFootnote, betaReviewCopy } from '../lib/betaCopy'
 import { getLastSnapshot, getSnapshotHistory } from '../utils/storage'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
-const betaPrivacyCopy = 'Tus respuestas se procesan sólo para generar este snapshot. En esta beta sin cuenta, no se guardan en una base de datos y se borran al actualizar la página.'
-const legalReviewCopy = '*Mensaje pendiente de revisión legal.'
 
 export default function SnapshotPage() {
   const snapshot = getLastSnapshot()
@@ -26,6 +26,7 @@ export default function SnapshotPage() {
 
   const metrics = snapshot.derivedMetrics
   const modules = learningModules.filter((module) => snapshot.recommendations.includes(module.id)).slice(0, 3)
+  const liveRecommendations = modules.filter((module) => liveModuleIds.includes(module.id))
 
   return (
     <div id="snapshot-report" className="k-page k-scenic-page">
@@ -45,7 +46,7 @@ export default function SnapshotPage() {
             <div>
               <h2 className="font-bold text-slate-950">Su información es privada</h2>
               <p className="mt-1 text-sm leading-6 text-slate-600">{betaPrivacyCopy}</p>
-              <p className="mt-2 text-xs font-semibold text-slate-500">{legalReviewCopy}</p>
+              <p className="mt-2 text-xs font-semibold text-slate-500">{betaReviewCopy}</p>
             </div>
           </div>
         </div>
@@ -127,19 +128,32 @@ export default function SnapshotPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="k-display text-2xl text-slate-950">Educación recomendada próximamente</h2>
-          <Link to="/learn" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800">Ver roadmap <ArrowRight size={16} /></Link>
+          <h2 className="k-display text-2xl text-slate-950">Educación recomendada</h2>
+          <Link to="/learn" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800">Ver módulos <ArrowRight size={16} /></Link>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {modules.map((module) => (
             <article key={module.id} className="k-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-              <p className="text-sm font-bold text-amber-700">Próximamente / {module.badge}</p>
+              <p className={`text-sm font-bold ${liveModuleIds.includes(module.id) ? 'text-emerald-700' : 'text-amber-700'}`}>
+                {liveModuleIds.includes(module.id) ? `Disponible / ${module.badge}` : `Próximamente / ${module.badge}`}
+              </p>
               <h3 className="mt-2 text-xl font-bold text-slate-950">{module.title}</h3>
               <p className="mt-2 min-h-16 text-sm leading-6 text-slate-600">{module.description}</p>
-              <p className="mt-4 rounded-lg bg-stone-50 px-3 py-2 text-xs font-bold text-slate-500">Se activará cuando Katalyst abra la fase educativa.</p>
+              {liveModuleIds.includes(module.id) ? (
+                <Link to={`/learn/${module.id}`} className="k-secondary mt-4 inline-flex w-full justify-center text-sm">
+                  Abrir módulo <ArrowRight size={16} />
+                </Link>
+              ) : (
+                <p className="mt-4 rounded-lg bg-stone-50 px-3 py-2 text-xs font-bold text-slate-500">Se activará cuando Katalyst abra la fase educativa.</p>
+              )}
             </article>
           ))}
         </div>
+        {!liveRecommendations.length && (
+          <p className="mt-3 rounded-lg bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+            Algunos módulos recomendados todavía están en preparación; los módulos de presupuesto, fondo de emergencia y deuda ya están disponibles.
+          </p>
+        )}
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
@@ -158,7 +172,7 @@ export default function SnapshotPage() {
       </section>
 
       <p className="border-t border-stone-200 pt-4 text-xs leading-6 text-slate-500">
-        Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada. {betaPrivacyCopy} {legalReviewCopy}
+        Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada. {betaPrivacyFootnote}
       </p>
     </div>
   )

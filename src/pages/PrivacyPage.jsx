@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ShieldCheck, Trash2 } from 'lucide-react'
+import { betaReviewCopy } from '../lib/betaCopy'
 import { clearLocalData } from '../utils/storage'
 
 const bullets = [
@@ -27,7 +28,7 @@ export default function PrivacyPage() {
       <p className="mt-3 leading-7 text-slate-600">
         La versión para la llamada está diseñada como snapshot de una sola sesión. El objetivo es dar claridad sin poner en riesgo respuestas financieras sensibles.
       </p>
-      <p className="mt-2 text-sm font-semibold text-slate-500">*Mensaje pendiente de revisión legal.</p>
+      <p className="mt-2 text-sm font-semibold text-slate-500">{betaReviewCopy}</p>
       <div className="mt-6 grid gap-3">
         {bullets.map((item) => (
           <p key={item} className="rounded-lg bg-slate-50 p-4 leading-7 text-slate-700">{item}</p>

@@ -1,13 +1,13 @@
 import jsPDF from 'jspdf'
 import { format } from 'date-fns'
 import { checkupQuestionBank } from '../data/checkupQuestionBank'
+import { liveModuleIds } from '../data/learningContent'
 import { learningModules } from '../data/learningModules'
+import { betaPrivacyCopy, betaReviewCopy } from './betaCopy'
 import { BENCHMARKS } from './financialCalculations'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 const pct = new Intl.NumberFormat('es-MX', { style: 'percent', maximumFractionDigits: 0 })
-const betaPrivacyCopy = 'Tus respuestas se procesan sólo para generar este snapshot. En esta beta sin cuenta, no se guardan en una base de datos y se borran al actualizar la página.'
-const legalReviewCopy = '*Mensaje pendiente de revisión legal.'
 
 const colors = {
   navy: [10, 28, 58],
@@ -354,12 +354,12 @@ function drawActionPlan(ctx, snapshot) {
 
 function drawRecommendedModules(ctx, snapshot) {
   ctx.y += 4
-  sectionTitle(ctx, 'Módulos recomendados próximamente')
+  sectionTitle(ctx, 'Módulos recomendados')
   const modules = learningModules.filter((module) => snapshot.recommendations.includes(module.id))
   drawTable(ctx, ['Módulo', 'Estado', 'Fase', 'Por qué'], modules.map((module) => [
     module.title,
-    'Próximamente',
-    'Educación',
+    liveModuleIds.includes(module.id) ? 'Disponible' : 'Próximamente',
+    liveModuleIds.includes(module.id) ? 'Beta' : 'Educación',
     module.description,
   ]), [48, 28, 18, 76])
 }
@@ -367,7 +367,7 @@ function drawRecommendedModules(ctx, snapshot) {
 function drawDisclaimer(ctx) {
   ctx.y += 8
   sectionTitle(ctx, 'Nota educativa')
-  note(ctx, `Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada, recomendación de inversión, diagnóstico legal, fiscal o crediticio. ${betaPrivacyCopy} ${legalReviewCopy}`)
+  note(ctx, `Este reporte es educativo y orientativo. No constituye asesoría financiera personalizada, recomendación de inversión, diagnóstico legal, fiscal o crediticio. ${betaPrivacyCopy} ${betaReviewCopy}`)
 }
 
 function drawAnswerAppendix(ctx, snapshot) {
@@ -466,7 +466,7 @@ function drawFooter(ctx) {
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(7)
   pdf.setTextColor(...colors.text)
-  pdf.text('Privacidad beta: no se guardan respuestas financieras sin cuenta. *Mensaje pendiente de revisión legal.', 18, 288)
+  pdf.text(`Privacidad beta: no se guardan respuestas financieras sin cuenta. ${betaReviewCopy}`, 18, 288)
   pdf.text(`KATALYST / ${ctx.page}`, 176, 288)
 }
 

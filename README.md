@@ -6,15 +6,15 @@ Privacy-first financial education and self-assessment platform built for communi
 
 ## Overview
 
-Katalyst Checkup Financiero helps users complete a private financial snapshot, understand their financial health, download a personalized PDF report, and see clear next steps. Education, resources, accounts, history, and admin insights are framed as upcoming product areas for later phases.
+Katalyst Checkup Financiero helps users complete a private financial snapshot, understand their financial health, download a personalized PDF report, and see clear next steps. The beta also includes three starter education modules; resources, accounts, history, events, and admin insights are framed as upcoming product areas for later phases.
 
-The Monday beta is focused on one reliable flow: checkup -> snapshot -> PDF. Education, resources, schedule, accounts, history, and admin insights are presented as upcoming product areas, not active production features.
+The Monday beta is focused on one reliable flow: checkup -> snapshot -> PDF, with starter learning modules available as supporting education. Resources, schedule, accounts, history, and admin insights are presented as upcoming product areas, not active production features.
 
 Simple beta privacy message:
 
 > Tus respuestas se procesan sólo para generar este snapshot. En esta beta sin cuenta, no se guardan en una base de datos y se borran al actualizar la página.
 >
-> *Mensaje pendiente de revisión legal.
+> Reporte educativo · versión beta.
 
 ## Why This Exists
 
@@ -29,7 +29,7 @@ The goal is not to replace financial advisors. It gives community members clarit
 - Deterministic scoring engine using income, expenses, debt, savings, dependents, protection, and financial habits
 - Personalized recommendations and 30-day action plan
 - Branded downloadable PDF report
-- Financial education roadmap marked as Próximamente
+- Three starter financial education modules available in beta
 - Optional account/history roadmap marked as Próximamente
 - Katalyst resources and schedule roadmap marked as Próximamente
 - Aggregate-only admin insights roadmap marked as Próximamente

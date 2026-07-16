@@ -8,6 +8,37 @@ import { readCheckupDraft, saveCheckupEntry, saveHelpRequest, saveSnapshot, writ
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 
+// Question-level skip logic: only ask a follow-up when a previous answer makes it relevant.
+// Extend this map to add more conditional questions — key is the question id, value is a
+// predicate over the current answers. Questions with no entry are always shown.
+const questionConditions = {
+  // Vivienda: solo preguntamos el gasto que corresponde a su situación.
+  expense_rent_monthly: (a) => a.housing_status === 'Rento',
+  expense_mortgage_monthly: (a) => a.housing_status === 'Casa propia con hipoteca',
+  debt_mortgage_balance: (a) => a.housing_status === 'Casa propia con hipoteca',
+  // Automóvil: los gastos específicos de coche solo aplican si hay auto propio.
+  // La línea de "Gasolina / transporte" se mantiene visible porque aplica a todos.
+  expense_auto_maintenance_monthly: (a) => a.has_vehicle === 'Sí',
+  expense_auto_insurance_monthly: (a) => a.has_vehicle === 'Sí',
+  expense_auto_purchase_monthly: (a) => a.has_vehicle === 'Sí',
+  debt_auto_balance: (a) => a.has_vehicle === 'Sí',
+}
+
+function isVisible(question, answers) {
+  const condition = questionConditions[question.id]
+  return condition ? condition(answers) : true
+}
+
+// Remove answers whose questions are no longer visible, so stale values (e.g. a mortgage
+// payment entered before switching to "Rento") never leak into the snapshot.
+function pruneHiddenAnswers(answers) {
+  const next = { ...answers }
+  Object.keys(questionConditions).forEach((id) => {
+    if (!questionConditions[id](next)) delete next[id]
+  })
+  return next
+}
+
 const sectionIcons = {
   profile_household: ShieldCheck,
   income: CircleDollarSign,
@@ -31,7 +62,7 @@ export default function CheckupPage() {
   const progress = Math.round(((sectionIndex + 1) / sections.length) * 100)
 
   function update(id, value) {
-    const next = { ...answers, [id]: value }
+    const next = pruneHiddenAnswers({ ...answers, [id]: value })
     setAnswers(next)
     writeCheckupDraft(next)
   }
@@ -95,7 +126,7 @@ export default function CheckupPage() {
             </div>
 
             <div className="grid gap-4">
-              {current.questions.map((question) => (
+              {current.questions.filter((question) => isVisible(question, answers)).map((question) => (
                 <QuestionField key={question.id} question={question} value={answers[question.id] ?? ''} onChange={update} />
               ))}
             </div>
@@ -162,10 +193,12 @@ function PrivacyPoint({ icon, title, copy }) {
 }
 
 function visibleSections(sections, answers) {
-  return sections.filter((section) => {
-    if (section.id !== 'children_education') return true
-    return Number(answers.children_count || 0) > 0 || Number(answers.dependents_count || 0) > 0
-  })
+  return sections
+    .filter((section) => {
+      if (section.id !== 'children_education') return true
+      return Number(answers.children_count || 0) > 0 || Number(answers.dependents_count || 0) > 0
+    })
+    .filter((section) => section.questions.some((question) => isVisible(question, answers)))
 }
 
 function Stepper({ sections, active }) {

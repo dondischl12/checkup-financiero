@@ -87,6 +87,16 @@ export const checkupQuestionBank = {
             "Otro"
           ],
           "required": true
+        },
+        {
+          "id": "has_vehicle",
+          "type": "single_select",
+          "label": "¿Cuenta con un automóvil propio?",
+          "options": [
+            "Sí",
+            "No"
+          ],
+          "required": true
         }
       ]
     },

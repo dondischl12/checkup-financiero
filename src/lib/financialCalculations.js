@@ -150,7 +150,17 @@ export function calculateDerivedMetrics(answers = {}) {
     return { name, value, color, percent: monthlyExpenses > 0 ? value / monthlyExpenses : 0 }
   }).filter((item) => item.value > 0)
 
+  // True once the user has entered any real financial figure. Until then we show a
+  // neutral "sin datos" state instead of a score, so an empty form never reads as a result.
+  const hasData =
+    monthlyIncome > 0 ||
+    monthlyExpenses > 0 ||
+    monthlySavings > 0 ||
+    debtTotal > 0 ||
+    emergencyFund > 0
+
   return {
+    hasData,
     monthlyIncome,
     monthlyExpenses,
     monthlySavings,

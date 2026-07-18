@@ -13,7 +13,7 @@ export const checkupQuestionBank = {
     {
       "id": "profile_household",
       "title": "Perfil del hogar",
-      "purpose": "Normalize recommendations by age, household structure, dependents, and income stability.",
+      "purpose": "Con estos datos personalizamos las guías y recomendaciones a su etapa de vida y a su hogar.",
       "questions": [
         {
           "id": "age",
@@ -21,8 +21,7 @@ export const checkupQuestionBank = {
           "label": "¿Cuántos años tiene?",
           "min": 13,
           "max": 100,
-          "required": true,
-          "note": "If <18, route to youth/education-first scoring."
+          "required": true
         },
         {
           "id": "household_size",
@@ -35,7 +34,7 @@ export const checkupQuestionBank = {
         {
           "id": "dependents_count",
           "type": "number",
-          "label": "¿Cuántas personas dependen económicamente de usted?",
+          "label": "¿Cuántas personas dependen económicamente de usted? Incluya hijos, menores y cualquier familiar a su cargo.",
           "min": 0,
           "max": 20,
           "required": true
@@ -43,7 +42,7 @@ export const checkupQuestionBank = {
         {
           "id": "children_count",
           "type": "number",
-          "label": "¿Cuántos hijos o menores dependen económicamente de usted?",
+          "label": "De esas personas que dependen de usted, ¿cuántas son hijos o menores de edad?",
           "min": 0,
           "max": 15,
           "required": false
@@ -103,12 +102,12 @@ export const checkupQuestionBank = {
     {
       "id": "income",
       "title": "Ingresos netos mensuales y extraordinarios",
-      "purpose": "Capture income after taxes, following the Excel instruction that income should be net after taxes.",
+      "purpose": "Sume el ingreso neto mensual de todas las personas que aportan al hogar (después de impuestos).",
       "questions": [
         {
           "id": "income_salary_net_monthly",
           "type": "currency",
-          "label": "Salarios u honorarios netos mensuales",
+          "label": "Salarios u honorarios netos mensuales (sume los de todas las personas que aportan al hogar)",
           "source_excel": "Ingresos!Salarios y Honorarios (neto)",
           "frequency": "monthly"
         },
@@ -166,7 +165,7 @@ export const checkupQuestionBank = {
     {
       "id": "housing_home_expenses",
       "title": "Gastos de casa y vida diaria",
-      "purpose": "Translate the Excel 'Gastos de la casa' block into monthly equivalents.",
+      "purpose": "Registre lo que gasta al mes en su vivienda y en el día a día del hogar.",
       "questions": [
         {
           "id": "expense_condo_monthly",
@@ -233,7 +232,7 @@ export const checkupQuestionBank = {
     {
       "id": "children_education",
       "title": "Hijos, educación y dependientes",
-      "purpose": "Only show this section if children_count > 0 or dependents_count > 0.",
+      "purpose": "Gastos relacionados con hijos, educación y las personas que dependen de usted.",
       "questions": [
         {
           "id": "expense_school_monthly",
@@ -284,6 +283,7 @@ export const checkupQuestionBank = {
     {
       "id": "insurance_protection",
       "title": "Seguros y protección familiar",
+      "purpose": "Lo que destina a proteger a su familia ante imprevistos importantes.",
       "questions": [
         {
           "id": "expense_health_insurance_monthly",
@@ -331,6 +331,7 @@ export const checkupQuestionBank = {
     {
       "id": "transport_auto",
       "title": "Automóvil y transporte",
+      "purpose": "Sus gastos de transporte y, si aplica, los relacionados con su automóvil.",
       "questions": [
         {
           "id": "expense_fuel_monthly",
@@ -361,6 +362,7 @@ export const checkupQuestionBank = {
     {
       "id": "recreation_lifestyle",
       "title": "Recreación, vacaciones y gastos personales",
+      "purpose": "Gastos de estilo de vida, esparcimiento y aportaciones personales.",
       "questions": [
         {
           "id": "expense_restaurants_monthly",
@@ -417,6 +419,7 @@ export const checkupQuestionBank = {
     {
       "id": "debt_credit",
       "title": "Deudas, crédito y costos financieros",
+      "purpose": "Un panorama de sus deudas y del costo financiero que cubre cada mes.",
       "questions": [
         {
           "id": "debt_credit_card_balance",
@@ -476,6 +479,7 @@ export const checkupQuestionBank = {
     {
       "id": "savings_assets",
       "title": "Ahorro, fondo de emergencia e inversión",
+      "purpose": "Su ahorro, fondo de emergencia e inversiones actuales.",
       "questions": [
         {
           "id": "cash_savings_total",
@@ -519,8 +523,8 @@ export const checkupQuestionBank = {
         },
         {
           "id": "top_financial_goal",
-          "type": "single_select",
-          "label": "¿Cuál es su meta financiera principal hoy?",
+          "type": "multi_select",
+          "label": "¿Cuáles son sus metas financieras hoy? Puede elegir varias.",
           "options": [
             "Ordenar mi presupuesto",
             "Crear fondo de emergencia",
@@ -537,6 +541,7 @@ export const checkupQuestionBank = {
     {
       "id": "habits_wellbeing",
       "title": "Hábitos y bienestar financiero",
+      "purpose": "Sus hábitos financieros y cómo se siente con su situación actual.",
       "questions": [
         {
           "id": "budget_tracking_frequency",
@@ -583,10 +588,10 @@ export const checkupQuestionBank = {
         },
         {
           "id": "wants_katalyst_contact",
-          "type": "single_select",
-          "label": "¿Le gustaría que Katalyst le comparta recursos o apoyo opcional?",
+          "type": "multi_select",
+          "label": "¿Le gustaría que Katalyst le comparta recursos o apoyo opcional? Puede elegir varias.",
           "options": [
-            "Solo recursos educativos",
+            "Quiero recursos educativos",
             "Quiero que me contacten",
             "Tal vez después",
             "No por ahora"

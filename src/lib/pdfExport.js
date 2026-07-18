@@ -277,7 +277,7 @@ function drawRatioTable(ctx, snapshot) {
     ['Deuda no hipotecaria/ingresos', pct.format(m.debtToIncome || 0), BENCHMARKS.debtToIncome.label, BENCHMARKS.debtToIncome.pass(m.debtToIncome)],
     ['Vivienda/ingreso', pct.format(m.housingRatio || 0), BENCHMARKS.housingRatio.label, BENCHMARKS.housingRatio.pass(m.housingRatio)],
   ]
-  drawTable(ctx, ['Métrica', 'Actual', 'Guía', 'Estado'], rows.map(([a, b, c, pass]) => [a, b, c, pass ? 'Bien' : 'Atención']), [58, 42, 42, 32])
+  drawTable(ctx, ['Métrica', 'Actual', 'Guía', 'Estado'], rows.map(([a, b, c, pass]) => [a, b, c, pass ? 'En la guía' : 'Oportunidad']), [58, 42, 42, 32])
 }
 
 function drawCategoryDistribution(ctx, snapshot) {

@@ -86,9 +86,11 @@ export default function CheckupPage() {
       emergencyFundMonths: finalSnapshot.derivedMetrics.emergencyMonths,
       scoreResult: { score: finalSnapshot.score, label: finalSnapshot.level.label },
     })
-    if (answers.wants_katalyst_contact === 'Quiero que me contacten') {
+    const contactPrefs = Array.isArray(answers.wants_katalyst_contact) ? answers.wants_katalyst_contact : []
+    if (contactPrefs.includes('Quiero que me contacten')) {
+      const goals = Array.isArray(answers.top_financial_goal) ? answers.top_financial_goal : []
       saveHelpRequest({
-        topic: answers.top_financial_goal || 'Snapshot financiero',
+        topic: goals.length ? goals.join(', ') : 'Snapshot financiero',
         message: 'Solicitud voluntaria enviada desde el checkup financiero.',
       })
     }
@@ -277,6 +279,41 @@ function QuestionField({ question, value, onChange }) {
     )
   }
 
+  if (question.type === 'multi_select') {
+    const selected = Array.isArray(value) ? value : []
+    const toggle = (option) => {
+      const next = selected.includes(option)
+        ? selected.filter((item) => item !== option)
+        : [...selected, option]
+      onChange(question.id, next)
+    }
+    return (
+      <article className="k-card p-4">
+        <p className="mb-1 font-bold text-slate-950">{question.label}</p>
+        <p className="mb-3 text-sm text-slate-500">Puede seleccionar más de una opción.</p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {question.options.map((option) => {
+            const isOn = selected.includes(option)
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => toggle(option)}
+                aria-pressed={isOn}
+                className={`k-focus flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm font-bold transition ${isOn ? 'border-emerald-600 bg-emerald-50 text-emerald-900 shadow-sm' : 'border-stone-200 bg-stone-50 text-slate-700 hover:bg-white'}`}
+              >
+                <span className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${isOn ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-stone-300 bg-white'}`}>
+                  {isOn && <Check size={14} />}
+                </span>
+                {option}
+              </button>
+            )
+          })}
+        </div>
+      </article>
+    )
+  }
+
   return (
     <label className="k-card grid gap-4 p-4 sm:grid-cols-[72px_1fr_240px] sm:items-center">
       <span className="k-icon-tile hidden h-16 w-16 sm:grid">
@@ -312,33 +349,39 @@ function QuestionField({ question, value, onChange }) {
 
 function PreviewCard({ snapshot }) {
   const metrics = snapshot.derivedMetrics
+  const hasData = metrics.hasData
+  const hasIncome = metrics.monthlyIncome > 0
   const degrees = `${Math.round((Math.max(0, Math.min(100, snapshot.score)) / 100) * 360)}deg`
+  const pct = (ratio) => `${Math.round(ratio * 100)}% del ingreso`
   const rows = [
-    ['Ingresos', metrics.monthlyIncome, metrics.monthlyIncome > 0 ? 'Bien' : 'Pendiente'],
-    ['Gastos', metrics.monthlyExpenses, metrics.expenseRatio <= 0.85 ? 'Bien' : 'Revisar'],
-    ['Deuda', metrics.debtPayments, metrics.debtToIncome <= 0.3 ? 'Bien' : 'Atención'],
-    ['Ahorro', metrics.monthlySavings, metrics.savingsRate >= 0.15 ? 'Bien' : 'Regular'],
-    ['Fondo', metrics.emergencyFund, metrics.emergencyMonths >= 3 ? 'Bien' : 'Regular'],
+    ['Ingresos', metrics.monthlyIncome, 'por mes'],
+    ['Gastos', metrics.monthlyExpenses, hasIncome ? pct(metrics.expenseRatio) : 'por mes'],
+    ['Deuda', metrics.debtPayments, hasIncome ? pct(metrics.debtToIncome) : 'por mes'],
+    ['Ahorro', metrics.monthlySavings, hasIncome ? pct(metrics.savingsRate) : 'por mes'],
+    ['Fondo de emergencia', metrics.emergencyFund, `${metrics.emergencyMonths.toFixed(1)} meses de gastos`],
   ]
   return (
     <section className="k-shell p-6">
       <p className="text-sm font-bold text-slate-600">Vista previa de su snapshot</p>
       <div className="my-6 text-center">
-        <div className="k-score-ring mx-auto h-40 w-40" style={{ '--score-deg': degrees }}>
+        <div className="k-score-ring mx-auto h-40 w-40" style={{ '--score-deg': hasData ? degrees : '0deg' }}>
           <div>
-            <p className="text-4xl font-bold text-slate-950 sm:text-5xl">{snapshot.score}</p>
+            <p className="text-4xl font-bold text-slate-950 sm:text-5xl">{hasData ? snapshot.score : '—'}</p>
             <p className="text-sm font-bold text-slate-500">/100</p>
           </div>
         </div>
-        <p className="mt-3 font-bold text-emerald-800">{snapshot.level.label}</p>
+        <p className="mt-3 font-bold text-emerald-800">{hasData ? snapshot.level.label : 'Aún sin datos'}</p>
+        {!hasData && (
+          <p className="mt-1 text-xs text-slate-500">Capture sus números para ver su resultado.</p>
+        )}
       </div>
       <div className="divide-y divide-stone-100">
-        {rows.map(([label, value, status]) => (
+        {rows.map(([label, value, context]) => (
           <div key={label} className="flex items-center justify-between py-3 text-sm">
             <span className="font-bold text-slate-700">{label}</span>
             <span className="text-right">
               <span className="block font-bold text-slate-950">{money.format(value)}</span>
-              <span className="text-xs font-bold text-emerald-700">{status}</span>
+              <span className="text-xs font-bold text-slate-500">{context}</span>
             </span>
           </div>
         ))}

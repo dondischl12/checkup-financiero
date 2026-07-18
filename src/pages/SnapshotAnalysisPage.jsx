@@ -119,7 +119,7 @@ function Ratio({ icon, title, value, target, pass }) {
       <p className="text-sm font-bold text-slate-500">{title}</p>
       <p className="mt-1 text-2xl font-bold text-slate-950">{value}</p>
       <p className="mt-1 text-sm text-slate-500">{target}</p>
-      <span className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-bold ${pass ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'}`}>{pass ? 'Bien' : 'Atención'}</span>
+      <span className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-bold ${pass ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'}`}>{pass ? 'En la guía' : 'Oportunidad'}</span>
     </article>
   )
 }
@@ -149,7 +149,7 @@ function Benchmarks({ metrics }) {
             <td className="py-3 font-bold text-slate-700">{metric}</td>
             <td>{current}</td>
             <td>{target}</td>
-            <td className={pass ? 'text-emerald-700' : 'text-amber-700'}>{pass ? 'Bien' : 'Atención'}</td>
+            <td className={pass ? 'text-emerald-700' : 'text-amber-700'}>{pass ? 'En la guía' : 'Oportunidad'}</td>
           </tr>
         ))}</tbody>
       </table>

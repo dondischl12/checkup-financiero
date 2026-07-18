@@ -25,6 +25,9 @@ export default function SnapshotPage() {
   }
 
   const metrics = snapshot.derivedMetrics
+  const hasData = metrics.hasData
+  const hasIncome = metrics.monthlyIncome > 0
+  const pctOfIncome = (ratio) => (hasIncome ? `${Math.round(ratio * 100)}% del ingreso` : 'Sin ingreso capturado')
   const modules = learningModules.filter((module) => snapshot.recommendations.includes(module.id)).slice(0, 3)
   const liveRecommendations = modules.filter((module) => liveModuleIds.includes(module.id))
 
@@ -56,9 +59,11 @@ export default function SnapshotPage() {
         <article className="k-shell relative grid min-h-[340px] gap-6 overflow-hidden p-7 md:grid-cols-[0.9fr_0.75fr]">
           <div className="k-landscape opacity-30" />
           <div className="flex flex-col items-center justify-center text-center">
-            <ScoreRing score={snapshot.score} />
-            <p className="mt-4 text-lg font-bold text-emerald-800">{snapshot.level.label}</p>
-            <p className="mt-4 max-w-md leading-7 text-slate-600">{snapshot.level.summary}</p>
+            <ScoreRing score={snapshot.score} hasData={hasData} />
+            <p className="mt-4 text-lg font-bold text-emerald-800">{hasData ? snapshot.level.label : 'Aún sin datos'}</p>
+            <p className="mt-4 max-w-md leading-7 text-slate-600">
+              {hasData ? snapshot.level.summary : 'Complete sus números en el checkup para generar su resultado y sus recomendaciones.'}
+            </p>
           </div>
           <div className="relative z-10 grid content-center gap-5 border-stone-100 md:border-l md:pl-7">
             <div className="rounded-lg bg-white/72 p-4 backdrop-blur">
@@ -83,17 +88,17 @@ export default function SnapshotPage() {
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <AccountHistoryCTA score={snapshot.score} />
+            <AccountHistoryCTA score={snapshot.score} hasData={hasData} />
           )}
         </ChartCard>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <Metric title="Ingresos mensuales" value={money.format(metrics.monthlyIncome)} label="MXN" />
-        <Metric title="Gastos mensuales" value={money.format(metrics.monthlyExpenses)} label={status(metrics.expenseRatio <= 0.85)} />
-        <Metric title="Ahorro mensual" value={money.format(metrics.monthlySavings)} label={`${Math.round(metrics.savingsRate * 100)}%`} />
-        <Metric title="Deuda total" value={money.format(metrics.debtTotal)} label={status(metrics.debtToIncome <= 0.3)} />
-        <Metric title="Fondo de emergencia" value={money.format(metrics.emergencyFund)} label={`${metrics.emergencyMonths.toFixed(1)} meses`} />
+        <Metric title="Ingresos mensuales" value={money.format(metrics.monthlyIncome)} label="por mes" />
+        <Metric title="Gastos mensuales" value={money.format(metrics.monthlyExpenses)} label={pctOfIncome(metrics.expenseRatio)} />
+        <Metric title="Ahorro mensual" value={money.format(metrics.monthlySavings)} label={hasIncome ? `${Math.round(metrics.savingsRate * 100)}% del ingreso` : 'por mes'} />
+        <Metric title="Deuda total" value={money.format(metrics.debtTotal)} label={hasIncome ? `${Math.round(metrics.debtToIncome * 100)}% del ingreso en pagos` : 'por mes'} />
+        <Metric title="Fondo de emergencia" value={money.format(metrics.emergencyFund)} label={`${metrics.emergencyMonths.toFixed(1)} meses de gastos`} />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
@@ -121,14 +126,14 @@ export default function SnapshotPage() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3">
-        <ListCard title="Fortalezas" items={snapshot.strengths} good />
-        <ListCard title="Áreas de atención" items={snapshot.attentionAreas} />
-        <ListCard title="Próximos pasos recomendados" items={snapshot.actionPlan.map((item) => item.title)} good />
+        <ListCard title="Fortalezas" items={snapshot.strengths} tone="emerald" />
+        <ListCard title="Áreas de atención" items={snapshot.attentionAreas} tone="amber" />
+        <ListCard title="Próximos pasos recomendados" items={snapshot.actionPlan.map((item) => item.title)} tone="sky" />
       </section>
 
-      <section>
+      <section className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-6">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="k-display text-2xl text-slate-950">Educación recomendada</h2>
+          <h2 className="k-display text-2xl text-emerald-900">Educación recomendada</h2>
           <Link to="/learn" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800">Ver módulos <ArrowRight size={16} /></Link>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -157,16 +162,16 @@ export default function SnapshotPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <button type="button" onClick={() => downloadPdf(snapshot, history)} className="k-card group flex items-center justify-between p-5 text-left transition hover:shadow-lg">
-          <span className="flex items-center gap-4"><IconTile><Download size={22} /></IconTile><span><span className="block font-bold text-slate-950">Descargar PDF</span><span className="text-sm text-slate-500">Guarde su reporte completo.</span></span></span>
+        <button type="button" onClick={() => downloadPdf(snapshot, history)} className="k-card group flex items-center justify-between border-emerald-100 bg-emerald-50/70 p-5 text-left transition hover:shadow-lg">
+          <span className="flex items-center gap-4"><IconTile tone="emerald"><Download size={22} /></IconTile><span><span className="block font-bold text-slate-950">Descargar PDF</span><span className="text-sm text-slate-500">Guarde su reporte completo.</span></span></span>
           <ArrowRight className="transition group-hover:translate-x-1" size={18} />
         </button>
-        <Link to="/snapshot/analysis" className="k-card group flex items-center justify-between p-5 transition hover:shadow-lg">
-          <span className="flex items-center gap-4"><IconTile><Bookmark size={22} /></IconTile><span><span className="block font-bold text-slate-950">Ver análisis</span><span className="text-sm text-slate-500">Compare ratios y benchmarks.</span></span></span>
+        <Link to="/snapshot/analysis" className="k-card group flex items-center justify-between border-sky-100 bg-sky-50/70 p-5 transition hover:shadow-lg">
+          <span className="flex items-center gap-4"><IconTile tone="sky"><Bookmark size={22} /></IconTile><span><span className="block font-bold text-slate-950">Ver análisis</span><span className="text-sm text-slate-500">Compare ratios y benchmarks.</span></span></span>
           <ArrowRight className="transition group-hover:translate-x-1" size={18} />
         </Link>
-        <Link to="/action-plan" className="k-card group flex items-center justify-between p-5 transition hover:shadow-lg">
-          <span className="flex items-center gap-4"><IconTile><MessageCircle size={22} /></IconTile><span><span className="block font-bold text-slate-950">Plan de acción</span><span className="text-sm text-slate-500">30 días de próximos pasos.</span></span></span>
+        <Link to="/action-plan" className="k-card group flex items-center justify-between border-amber-100 bg-amber-50/70 p-5 transition hover:shadow-lg">
+          <span className="flex items-center gap-4"><IconTile tone="amber"><MessageCircle size={22} /></IconTile><span><span className="block font-bold text-slate-950">Plan de acción</span><span className="text-sm text-slate-500">30 días de próximos pasos.</span></span></span>
           <ArrowRight className="transition group-hover:translate-x-1" size={18} />
         </Link>
       </section>
@@ -178,7 +183,7 @@ export default function SnapshotPage() {
   )
 }
 
-function AccountHistoryCTA({ score }) {
+function AccountHistoryCTA({ score, hasData = true }) {
   return (
     <div className="relative h-[260px] overflow-hidden rounded-lg bg-[#f4f7ef] p-6">
       <div className="k-landscape opacity-40" />
@@ -193,7 +198,7 @@ function AccountHistoryCTA({ score }) {
         <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
           <div>
             <p className="text-xs font-bold uppercase text-emerald-800">Snapshot actual</p>
-            <p className="text-4xl font-bold text-slate-950">{score}<span className="text-base text-slate-500">/100</span></p>
+            <p className="text-4xl font-bold text-slate-950">{hasData ? score : '—'}<span className="text-base text-slate-500">/100</span></p>
           </div>
           <Link to="/login" className="k-secondary px-4 py-3 text-sm">
             Próximamente <ArrowRight size={16} />
@@ -209,12 +214,12 @@ async function downloadPdf(snapshot, history) {
   exportSnapshotPdf(snapshot, history)
 }
 
-function ScoreRing({ score }) {
+function ScoreRing({ score, hasData = true }) {
   const degrees = `${Math.round((Math.max(0, Math.min(100, score)) / 100) * 360)}deg`
   return (
-    <div className="k-score-ring h-52 w-52 sm:h-64 sm:w-64" style={{ '--score-deg': degrees }}>
+    <div className="k-score-ring h-52 w-52 sm:h-64 sm:w-64" style={{ '--score-deg': hasData ? degrees : '0deg' }}>
       <div>
-        <p className="text-6xl font-bold text-slate-950 sm:text-7xl">{score}</p>
+        <p className="text-6xl font-bold text-slate-950 sm:text-7xl">{hasData ? score : '—'}</p>
         <p className="text-lg font-bold text-slate-500">/100</p>
       </div>
     </div>
@@ -234,8 +239,15 @@ function Insight({ icon, title, value, copy }) {
   )
 }
 
-function IconTile({ children }) {
-  return <span className="k-icon-tile">{children}</span>
+const iconTileTones = {
+  emerald: 'bg-emerald-100 text-emerald-700',
+  sky: 'bg-sky-100 text-sky-700',
+  amber: 'bg-amber-100 text-amber-700',
+}
+
+function IconTile({ children, tone }) {
+  const toneClass = tone ? iconTileTones[tone] : ''
+  return <span className={`k-icon-tile ${toneClass}`}>{children}</span>
 }
 
 function Metric({ title, value, label }) {
@@ -257,14 +269,21 @@ function MiniMetric({ label, value }) {
   )
 }
 
-function ListCard({ title, items, good = false }) {
+const listTones = {
+  emerald: { card: 'bg-emerald-50/70 border-emerald-100', title: 'text-emerald-900', dot: 'bg-emerald-600' },
+  amber: { card: 'bg-amber-50/70 border-amber-100', title: 'text-amber-900', dot: 'bg-amber-500' },
+  sky: { card: 'bg-sky-50/70 border-sky-100', title: 'text-sky-900', dot: 'bg-sky-600' },
+}
+
+function ListCard({ title, items, tone = 'emerald' }) {
+  const t = listTones[tone] || listTones.emerald
   return (
-    <article className="k-card p-5">
-      <h2 className="mb-3 font-bold text-slate-950">{title}</h2>
+    <article className={`k-card p-5 ${t.card}`}>
+      <h2 className={`mb-3 font-bold ${t.title}`}>{title}</h2>
       <ul className="space-y-2">
         {items.map((item) => (
-          <li key={item} className="flex gap-2 text-sm leading-6 text-slate-600">
-            <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${good ? 'bg-emerald-700' : 'bg-amber-500'}`} />
+          <li key={item} className="flex gap-2 text-sm leading-6 text-slate-700">
+            <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${t.dot}`} />
             {item}
           </li>
         ))}
@@ -280,10 +299,6 @@ function ChartCard({ title, children }) {
       {children}
     </article>
   )
-}
-
-function status(pass) {
-  return pass ? 'Bien' : 'Revisar'
 }
 
 function buildTrend(history) {

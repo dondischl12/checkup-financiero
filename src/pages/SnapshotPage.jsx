@@ -93,15 +93,18 @@ export default function SnapshotPage() {
         </ChartCard>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <Metric title="Ingresos mensuales" value={money.format(metrics.monthlyIncome)} label="por mes" />
-        <Metric title="Gastos mensuales" value={money.format(metrics.monthlyExpenses)} label={pctOfIncome(metrics.expenseRatio)} />
-        <Metric title="Ahorro mensual" value={money.format(metrics.monthlySavings)} label={hasIncome ? `${Math.round(metrics.savingsRate * 100)}% del ingreso` : 'por mes'} />
-        <Metric title="Deuda total" value={money.format(metrics.debtTotal)} label={hasIncome ? `${Math.round(metrics.debtToIncome * 100)}% del ingreso en pagos` : 'por mes'} />
-        <Metric title="Fondo de emergencia" value={money.format(metrics.emergencyFund)} label={`${metrics.emergencyMonths.toFixed(1)} meses de gastos`} />
+      <section className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6">
+        <h2 className="mb-4 font-bold text-emerald-900">Resumen del mes</h2>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          <Metric title="Ingresos mensuales" value={money.format(metrics.monthlyIncome)} label="por mes" />
+          <Metric title="Gastos mensuales" value={money.format(metrics.monthlyExpenses)} label={pctOfIncome(metrics.expenseRatio)} />
+          <Metric title="Ahorro mensual" value={money.format(metrics.monthlySavings)} label={hasIncome ? `${Math.round(metrics.savingsRate * 100)}% del ingreso` : 'por mes'} />
+          <Metric title="Deuda total" value={money.format(metrics.debtTotal)} label={hasIncome ? `${Math.round(metrics.debtToIncome * 100)}% del ingreso en pagos` : 'por mes'} />
+          <Metric title="Fondo de emergencia" value={money.format(metrics.emergencyFund)} label={`${metrics.emergencyMonths.toFixed(1)} meses de gastos`} />
+        </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
+      <section className="grid gap-4 rounded-2xl border border-sky-100 bg-sky-50 p-6 lg:grid-cols-[0.8fr_1.2fr]">
         <article className="k-card p-5">
           <h2 className="font-bold text-slate-950">Recurrente vs. anual / one-time</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -131,7 +134,7 @@ export default function SnapshotPage() {
         <ListCard title="Próximos pasos recomendados" items={snapshot.actionPlan.map((item) => item.title)} tone="sky" />
       </section>
 
-      <section className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-6">
+      <section className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="k-display text-2xl text-emerald-900">Educación recomendada</h2>
           <Link to="/learn" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800">Ver módulos <ArrowRight size={16} /></Link>
@@ -162,15 +165,15 @@ export default function SnapshotPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <button type="button" onClick={() => downloadPdf(snapshot, history)} className="k-card group flex items-center justify-between border-emerald-100 bg-emerald-50/70 p-5 text-left transition hover:shadow-lg">
+        <button type="button" onClick={() => downloadPdf(snapshot, history)} className="k-card group flex items-center justify-between border-emerald-100 bg-emerald-50 p-5 text-left transition hover:shadow-lg">
           <span className="flex items-center gap-4"><IconTile tone="emerald"><Download size={22} /></IconTile><span><span className="block font-bold text-slate-950">Descargar PDF</span><span className="text-sm text-slate-500">Guarde su reporte completo.</span></span></span>
           <ArrowRight className="transition group-hover:translate-x-1" size={18} />
         </button>
-        <Link to="/snapshot/analysis" className="k-card group flex items-center justify-between border-sky-100 bg-sky-50/70 p-5 transition hover:shadow-lg">
+        <Link to="/snapshot/analysis" className="k-card group flex items-center justify-between border-sky-100 bg-sky-50 p-5 transition hover:shadow-lg">
           <span className="flex items-center gap-4"><IconTile tone="sky"><Bookmark size={22} /></IconTile><span><span className="block font-bold text-slate-950">Ver análisis</span><span className="text-sm text-slate-500">Compare ratios y benchmarks.</span></span></span>
           <ArrowRight className="transition group-hover:translate-x-1" size={18} />
         </Link>
-        <Link to="/action-plan" className="k-card group flex items-center justify-between border-amber-100 bg-amber-50/70 p-5 transition hover:shadow-lg">
+        <Link to="/action-plan" className="k-card group flex items-center justify-between border-amber-100 bg-amber-50 p-5 transition hover:shadow-lg">
           <span className="flex items-center gap-4"><IconTile tone="amber"><MessageCircle size={22} /></IconTile><span><span className="block font-bold text-slate-950">Plan de acción</span><span className="text-sm text-slate-500">30 días de próximos pasos.</span></span></span>
           <ArrowRight className="transition group-hover:translate-x-1" size={18} />
         </Link>
@@ -270,9 +273,9 @@ function MiniMetric({ label, value }) {
 }
 
 const listTones = {
-  emerald: { card: 'bg-emerald-50/70 border-emerald-100', title: 'text-emerald-900', dot: 'bg-emerald-600' },
-  amber: { card: 'bg-amber-50/70 border-amber-100', title: 'text-amber-900', dot: 'bg-amber-500' },
-  sky: { card: 'bg-sky-50/70 border-sky-100', title: 'text-sky-900', dot: 'bg-sky-600' },
+  emerald: { card: 'bg-emerald-50 border-emerald-100', title: 'text-emerald-900', dot: 'bg-emerald-600' },
+  amber: { card: 'bg-amber-50 border-amber-100', title: 'text-amber-900', dot: 'bg-amber-500' },
+  sky: { card: 'bg-sky-50 border-sky-100', title: 'text-sky-900', dot: 'bg-sky-600' },
 }
 
 function ListCard({ title, items, tone = 'emerald' }) {

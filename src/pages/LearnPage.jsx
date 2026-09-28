@@ -27,8 +27,8 @@ export default function LearnPage() {
           <BookOpen className="mb-4 text-emerald-700" />
           <h2 className="font-bold text-slate-950">3 módulos disponibles hoy</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Presupuesto, fondo de emergencia y deuda. En modo invitado su avance vive solo durante la sesión;
-            guardar progreso llegará con las cuentas.
+            Presupuesto, fondo de emergencia y deuda. Su avance vive sólo durante la sesión;
+            no se guarda en ninguna base de datos.
           </p>
         </div>
       </section>

@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { BarChart3, BookOpen, ClipboardCheck, Home, UserRound } from 'lucide-react'
+import { BarChart3, BookOpen, ClipboardCheck, Home } from 'lucide-react'
 import { useLenis } from '../../hooks/useLenis'
 
 const navItems = [
@@ -32,8 +32,8 @@ export default function Layout() {
               </NavLink>
             ))}
           </nav>
-          <NavLink to="/login" className="hidden items-center gap-2 rounded-lg bg-[#071832] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-stone-300 md:inline-flex">
-            <UserRound size={16} /> Guardar progreso <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] uppercase">Próx.</span>
+          <NavLink to="/checkup" className="hidden items-center gap-2 rounded-lg bg-[#071832] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-stone-300 md:inline-flex">
+            <ClipboardCheck size={16} /> Hacer mi checkup
           </NavLink>
         </div>
       </header>

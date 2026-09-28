@@ -4,7 +4,7 @@ import { checkupQuestionBank } from '../data/checkupQuestionBank'
 import { liveModuleIds } from '../data/learningContent'
 import { learningModules } from '../data/learningModules'
 import { betaPrivacyCopy, betaReviewCopy } from './betaCopy'
-import { BENCHMARKS } from './financialCalculations'
+import { BENCHMARKS, PILLAR_META, pillarTier } from './financialCalculations'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 const pct = new Intl.NumberFormat('es-MX', { style: 'percent', maximumFractionDigits: 0 })
@@ -24,14 +24,14 @@ const colors = {
   muted: [102, 112, 133],
 }
 
-export function exportSnapshotPdf(snapshot, history = []) {
+export function exportSnapshotPdf(snapshot) {
   if (!snapshot) return
 
-  const { pdf, filename } = createSnapshotPdf(snapshot, history)
+  const { pdf, filename } = createSnapshotPdf(snapshot)
   pdf.save(filename)
 }
 
-export function createSnapshotPdf(snapshot, history = []) {
+export function createSnapshotPdf(snapshot) {
   const pdf = new jsPDF('p', 'mm', 'a4')
   const filename = `katalyst-snapshot-financiero-${format(new Date(snapshot.createdAt || new Date()), 'yyyy-MM-dd')}.pdf`
   const ctx = { pdf, y: 0, page: 1 }
@@ -47,7 +47,7 @@ export function createSnapshotPdf(snapshot, history = []) {
   drawRatioTable(ctx, snapshot)
   drawCategoryDistribution(ctx, snapshot)
   drawRecurringBreakdown(ctx, snapshot)
-  drawHistory(ctx, history)
+  drawScoreBreakdown(ctx, snapshot)
   drawFooter(ctx)
 
   addPage(ctx, 'Plan de acción y educación próxima')
@@ -319,19 +319,19 @@ function drawRecurringBreakdown(ctx, snapshot) {
   ctx.y += 46
 }
 
-function drawHistory(ctx, history) {
-  sectionTitle(ctx, 'Historial real')
-  if (history.length <= 1) {
-    note(ctx, 'Para comparar progreso en el tiempo, cree una cuenta opcional y guarde snapshots posteriores con consentimiento. No se generan datos históricos simulados.')
-    return
-  }
-  drawTable(ctx, ['Fecha', 'Score', 'Ingresos', 'Gastos', 'Ahorro'], history.map((item) => [
-    new Date(item.createdAt).toLocaleDateString('es-MX'),
-    String(item.score),
-    money.format(item.derivedMetrics?.monthlyIncome || 0),
-    money.format(item.derivedMetrics?.monthlyExpenses || 0),
-    money.format(item.derivedMetrics?.monthlySavings || 0),
-  ]), [34, 26, 38, 38, 34])
+function drawScoreBreakdown(ctx, snapshot) {
+  ctx.y += 8
+  sectionTitle(ctx, 'Desglose del score por área')
+  const { subscores = {}, weights = {} } = snapshot.scoreBreakdown || {}
+  const rows = Object.keys(weights)
+    .sort((a, b) => weights[b] - weights[a])
+    .map((key) => [
+      PILLAR_META[key]?.label || key,
+      String(Math.round(subscores[key] ?? 0)),
+      `${Math.round(weights[key])}%`,
+      pillarTier(subscores[key] ?? 0),
+    ])
+  drawTable(ctx, ['Área', 'Puntaje', 'Peso', 'Estado'], rows, [74, 26, 26, 44])
 }
 
 function drawActionPlan(ctx, snapshot) {
@@ -466,7 +466,7 @@ function drawFooter(ctx) {
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(7)
   pdf.setTextColor(...colors.text)
-  pdf.text(`Privacidad beta: no se guardan respuestas financieras sin cuenta. ${betaReviewCopy}`, 18, 288)
+  pdf.text(`Privacidad: sus respuestas no se guardan en ninguna base de datos. ${betaReviewCopy}`, 18, 288)
   pdf.text(`KATALYST / ${ctx.page}`, 176, 288)
 }
 

@@ -196,7 +196,7 @@ function ModuleComplete({ module, correct, total, onRestart }) {
           </Link>
         </div>
         <p className="mt-6 text-xs font-semibold text-slate-500">
-          En modo invitado este avance no se guarda. Guardar progreso llegará con las cuentas.
+          Este avance vive sólo durante la sesión; no se guarda en ninguna base de datos.
         </p>
       </section>
     </div>
@@ -216,7 +216,7 @@ function UpcomingModule() {
         </p>
         <div className="mt-6 flex items-center gap-3 rounded-lg bg-white/80 p-5 text-sm leading-6 text-slate-600">
           <LockKeyhole className="shrink-0 text-emerald-700" />
-          En esta beta no se guarda progreso educativo; llegará con las cuentas.
+          El avance educativo vive sólo durante la sesión; no se guarda en ninguna base de datos.
         </div>
         <Link to="/learn" className="k-primary mt-6 inline-flex px-5 py-3">
           Ver módulos disponibles <ArrowRight size={16} />

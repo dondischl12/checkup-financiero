@@ -4,13 +4,14 @@ import { betaReviewCopy } from '../lib/betaCopy'
 import { clearLocalData } from '../utils/storage'
 
 const bullets = [
-  'Tus respuestas se procesan sólo para generar este snapshot.',
-  'En esta beta sin cuenta, no se guardan en una base de datos.',
-  'Si actualizas la página o abres otra pestaña, el snapshot invitado se borra.',
+  'Sus respuestas se procesan sólo para generar este reporte.',
+  'No existen cuentas de usuario: no hay registro, login ni historial personal.',
+  'Sus respuestas no se guardan en ninguna base de datos.',
+  'Si actualiza la página o abre otra pestaña, el reporte se borra.',
   'La plataforma no conecta cuentas bancarias.',
-  'El PDF se genera desde el snapshot de esta sesión.',
+  'El PDF se genera en su dispositivo, desde el reporte de esta sesión.',
   'Las recomendaciones son educativas y no sustituyen asesoría financiera profesional.',
-  'Cuentas, historial, recursos y admin agregado son funciones próximas y requieren revisión de privacidad.',
+  'Recursos y panel agregado de Katalyst son funciones próximas y requieren revisión de privacidad.',
 ]
 
 export default function PrivacyPage() {
@@ -26,7 +27,7 @@ export default function PrivacyPage() {
       <ShieldCheck className="mb-5 text-emerald-700" size={34} />
       <h1 className="text-3xl font-bold text-slate-950">Privacidad de la beta</h1>
       <p className="mt-3 leading-7 text-slate-600">
-        La versión para la llamada está diseñada como snapshot de una sola sesión. El objetivo es dar claridad sin poner en riesgo respuestas financieras sensibles.
+        Esta versión está diseñada como un reporte de una sola sesión, sin cuentas de usuario. El objetivo es dar claridad sin exponer respuestas financieras sensibles.
       </p>
       <p className="mt-2 text-sm font-semibold text-slate-500">{betaReviewCopy}</p>
       <div className="mt-6 grid gap-3">

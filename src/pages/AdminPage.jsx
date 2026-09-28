@@ -9,11 +9,11 @@ export default function AdminPage() {
         <p className="k-eyebrow">Próximamente / uso interno</p>
         <h1 className="k-display mt-3 text-3xl text-slate-950 sm:text-4xl md:text-5xl">Panel agregado de impacto</h1>
         <p className="k-copy mt-4 max-w-3xl">
-          En una fase futura, Katalyst podrá consultar métricas agregadas para entender necesidades de la comunidad sin ver respuestas financieras individuales.
+          En una fase futura, el equipo de Katalyst podrá iniciar sesión para consultar métricas agregadas y anónimas de la comunidad. Los usuarios del checkup nunca tienen cuenta, y sus respuestas individuales no son visibles para nadie.
         </p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <InfoCard icon={<ShieldCheck size={20} />} title="Sólo datos agregados" copy="El diseño futuro debe evitar exponer respuestas personales o financieras." />
-          <InfoCard icon={<LockKeyhole size={20} />} title="Requiere revisión de privacidad" copy="Antes de activarse, este panel necesita reglas de acceso, consentimiento y revisión legal." />
+          <InfoCard icon={<LockKeyhole size={20} />} title="Requiere revisión de privacidad" copy="Antes de activarse, este panel necesita reglas de acceso para el equipo de Katalyst y revisión legal." />
         </div>
         <Link to="/checkup" className="k-primary mt-6 inline-flex px-5 py-3">
           Volver al checkup <ArrowRight size={16} />

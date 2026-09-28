@@ -6,7 +6,7 @@ import { betaPrivacyCopy, betaReviewCopy } from '../lib/betaCopy'
 import { buildSnapshot } from '../lib/financialCalculations'
 import { formatThousands, parseThousands } from '../lib/numberFormat'
 import ScoreGauge from '../components/shared/ScoreGauge'
-import { readCheckupDraft, saveCheckupEntry, saveHelpRequest, saveSnapshot, writeCheckupDraft } from '../utils/storage'
+import { readCheckupDraft, saveSnapshot, writeCheckupDraft } from '../utils/storage'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 
@@ -75,27 +75,7 @@ export default function CheckupPage() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
-    const finalSnapshot = buildSnapshot(answers)
-    saveSnapshot(finalSnapshot)
-    saveCheckupEntry({
-      id: `snapshot-${Date.now()}`,
-      createdAt: finalSnapshot.createdAt,
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      monthlyIncome: finalSnapshot.derivedMetrics.monthlyIncome,
-      monthlyExpenses: finalSnapshot.derivedMetrics.monthlyExpenses,
-      monthlySavings: finalSnapshot.derivedMetrics.monthlySavings,
-      emergencyFundMonths: finalSnapshot.derivedMetrics.emergencyMonths,
-      scoreResult: { score: finalSnapshot.score, label: finalSnapshot.level.label },
-    })
-    const contactPrefs = Array.isArray(answers.wants_katalyst_contact) ? answers.wants_katalyst_contact : []
-    if (contactPrefs.includes('Quiero que me contacten')) {
-      const goals = Array.isArray(answers.top_financial_goal) ? answers.top_financial_goal : []
-      saveHelpRequest({
-        topic: goals.length ? goals.join(', ') : 'Snapshot financiero',
-        message: 'Solicitud voluntaria enviada desde el checkup financiero.',
-      })
-    }
+    saveSnapshot(buildSnapshot(answers))
     navigate('/snapshot')
   }
 

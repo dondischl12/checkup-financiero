@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowRight, Check, CircleDollarSign, Info, LockKeyhole, Shie
 import { checkupQuestionBank } from '../data/checkupQuestionBank'
 import { betaPrivacyCopy, betaReviewCopy } from '../lib/betaCopy'
 import { buildSnapshot } from '../lib/financialCalculations'
+import { formatThousands, parseThousands } from '../lib/numberFormat'
+import ScoreGauge from '../components/shared/ScoreGauge'
 import { readCheckupDraft, saveCheckupEntry, saveHelpRequest, saveSnapshot, writeCheckupDraft } from '../utils/storage'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
@@ -331,17 +333,30 @@ function QuestionField({ question, value, onChange }) {
       </span>
       <span className="flex items-center overflow-hidden rounded-lg border border-stone-300 bg-white focus-within:border-emerald-600 focus-within:ring-4 focus-within:ring-emerald-100">
         {question.type === 'currency' && <span className="border-r border-stone-200 px-3 text-sm font-bold text-slate-500">MXN</span>}
-        <input
-          id={question.id}
-          name={question.id}
-          type="number"
-          min={question.min ?? 0}
-          max={question.max}
-          value={value}
-          onChange={(event) => onChange(question.id, event.target.value)}
-          className="w-full bg-transparent px-4 py-3 text-right font-bold text-slate-950 outline-none"
-          placeholder={question.type === 'currency' ? '$0' : '0'}
-        />
+        {question.type === 'currency' ? (
+          <input
+            id={question.id}
+            name={question.id}
+            type="text"
+            inputMode="numeric"
+            value={formatThousands(value)}
+            onChange={(event) => onChange(question.id, parseThousands(event.target.value))}
+            className="w-full bg-transparent px-4 py-3 text-right font-bold tabular-nums text-slate-950 outline-none"
+            placeholder="$0"
+          />
+        ) : (
+          <input
+            id={question.id}
+            name={question.id}
+            type="number"
+            min={question.min ?? 0}
+            max={question.max}
+            value={value}
+            onChange={(event) => onChange(question.id, event.target.value)}
+            className="w-full bg-transparent px-4 py-3 text-right font-bold text-slate-950 outline-none"
+            placeholder="0"
+          />
+        )}
       </span>
     </label>
   )
@@ -351,7 +366,6 @@ function PreviewCard({ snapshot }) {
   const metrics = snapshot.derivedMetrics
   const hasData = metrics.hasData
   const hasIncome = metrics.monthlyIncome > 0
-  const degrees = `${Math.round((Math.max(0, Math.min(100, snapshot.score)) / 100) * 360)}deg`
   const pct = (ratio) => `${Math.round(ratio * 100)}% del ingreso`
   const rows = [
     ['Ingresos', metrics.monthlyIncome, 'por mes'],
@@ -364,13 +378,7 @@ function PreviewCard({ snapshot }) {
     <section className="k-shell p-6">
       <p className="text-sm font-bold text-slate-600">Vista previa de su snapshot</p>
       <div className="my-6 text-center">
-        <div className="k-score-ring mx-auto h-40 w-40" style={{ '--score-deg': hasData ? degrees : '0deg' }}>
-          <div>
-            <p className="text-4xl font-bold text-slate-950 sm:text-5xl">{hasData ? snapshot.score : '—'}</p>
-            <p className="text-sm font-bold text-slate-500">/100</p>
-          </div>
-        </div>
-        <p className="mt-3 font-bold text-emerald-800">{hasData ? snapshot.level.label : 'Aún sin datos'}</p>
+        <ScoreGauge score={snapshot.score} hasData={hasData} className="mx-auto w-48" />
         {!hasData && (
           <p className="mt-1 text-xs text-slate-500">Capture sus números para ver su resultado.</p>
         )}

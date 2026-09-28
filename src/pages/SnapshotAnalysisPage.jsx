@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
 import { Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { ArrowLeft, Home, PiggyBank, Scale, ShieldCheck, TrendingUp, UserRound } from 'lucide-react'
+import { ArrowLeft, UserRound } from 'lucide-react'
 import { getLastSnapshot, getSnapshotHistory } from '../utils/storage'
-import { BENCHMARKS } from '../lib/financialCalculations'
+import { BENCHMARKS, PILLAR_META, pillarTier } from '../lib/financialCalculations'
 import { betaPrivacyCopy, betaReviewCopy } from '../lib/betaCopy'
+import StatementHeader from '../components/shared/StatementHeader'
+import StatementSummaryGrid from '../components/shared/StatementSummaryGrid'
+import StatementTable from '../components/shared/StatementTable'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 export default function SnapshotAnalysisPage() {
@@ -17,19 +20,18 @@ export default function SnapshotAnalysisPage() {
   return (
     <div className="k-page k-scenic-page">
       <Link to="/snapshot" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800"><ArrowLeft size={16} /> Volver al snapshot</Link>
-      <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_360px] lg:items-end">
-        <div>
-          <h1 className="k-display text-3xl sm:text-4xl md:text-5xl">Análisis detallado de su snapshot</h1>
-          <p className="k-copy mt-3 max-w-3xl text-lg">Profundizamos en sus datos para comparar ratios con guías recomendadas y convertirlos en acciones concretas.</p>
-        </div>
-        <div className="k-soft-card p-5 text-sm font-bold text-emerald-900">
-          Solo usted ve este análisis individual. {betaPrivacyCopy} {betaReviewCopy}
-        </div>
-      </section>
 
-      <section className="k-card px-5 py-3 text-sm text-slate-600">
-        <b className="text-slate-950">Perfil del hogar:</b> {profile.age || 'N/D'} años / {profile.dependents_count || 0} dependientes / hogar de {profile.household_size || 'N/D'} / {profile.employment_status || 'situación laboral no capturada'} / MXN
-      </section>
+      <StatementHeader
+        title="Análisis detallado de su snapshot"
+        meta={[
+          ['Edad', profile.age || 'N/D'],
+          ['Dependientes', profile.dependents_count || 0],
+          ['Hogar', profile.household_size || 'N/D'],
+          ['Moneda', 'MXN'],
+        ]}
+      />
+      <p className="k-copy max-w-3xl text-lg">Profundizamos en sus datos para comparar ratios con guías recomendadas y convertirlos en acciones concretas.</p>
+      <p className="text-sm font-bold text-emerald-900">Solo usted ve este análisis individual. {betaPrivacyCopy} {betaReviewCopy}</p>
 
       <section className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
         <article className="k-card p-6">
@@ -82,12 +84,17 @@ export default function SnapshotAnalysisPage() {
         </article>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <Ratio icon={<Scale />} title="Deuda no hipotecaria / ingresos" value={`${Math.round(metrics.debtToIncome * 100)}%`} target={`Objetivo: ${BENCHMARKS.debtToIncome.label}`} pass={BENCHMARKS.debtToIncome.pass(metrics.debtToIncome)} />
-        <Ratio icon={<PiggyBank />} title="Tasa de ahorro" value={`${Math.round(metrics.savingsRate * 100)}%`} target={`Objetivo: ${BENCHMARKS.savingsRate.label}`} pass={BENCHMARKS.savingsRate.pass(metrics.savingsRate)} />
-        <Ratio icon={<ShieldCheck />} title="Fondo de emergencia" value={`${metrics.emergencyMonths.toFixed(1)} meses`} target={`Rango ideal: ${BENCHMARKS.emergencyMonths.label}`} pass={BENCHMARKS.emergencyMonths.pass(metrics.emergencyMonths)} />
-        <Ratio icon={<Home />} title="Gasto en vivienda" value={`${Math.round(metrics.housingRatio * 100)}%`} target={`Objetivo: ${BENCHMARKS.housingRatio.label}`} pass={BENCHMARKS.housingRatio.pass(metrics.housingRatio)} />
-        <Ratio icon={<TrendingUp />} title="Flujo mensual neto" value={money.format(metrics.netFlow)} target="Ingresos − gastos" pass={metrics.netFlow >= 0} />
+      <section>
+        <h2 className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">Ratios de este mes</h2>
+        <StatementSummaryGrid
+          items={[
+            { label: 'Deuda no hipotecaria / ingresos', value: `${Math.round(metrics.debtToIncome * 100)}%`, note: `Objetivo: ${BENCHMARKS.debtToIncome.label}` },
+            { label: 'Tasa de ahorro', value: `${Math.round(metrics.savingsRate * 100)}%`, note: `Objetivo: ${BENCHMARKS.savingsRate.label}` },
+            { label: 'Fondo de emergencia', value: `${metrics.emergencyMonths.toFixed(1)} meses`, note: `Rango ideal: ${BENCHMARKS.emergencyMonths.label}` },
+            { label: 'Gasto en vivienda', value: `${Math.round(metrics.housingRatio * 100)}%`, note: `Objetivo: ${BENCHMARKS.housingRatio.label}` },
+            { label: 'Flujo mensual neto', value: money.format(metrics.netFlow), note: 'Ingresos − gastos' },
+          ]}
+        />
       </section>
 
       <section className="k-card p-6">
@@ -108,20 +115,30 @@ export default function SnapshotAnalysisPage() {
         <List title="Fortalezas" items={snapshot.strengths} />
         <List title="Áreas de atención" items={snapshot.attentionAreas} attention />
       </section>
+
+      <section>
+        <h2 className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">Desglose de su score</h2>
+        <p className="mb-3 max-w-2xl text-sm leading-6 text-slate-600">
+          Su score combina estas 8 áreas. El peso de cada una refleja tanto guías financieras publicadas
+          como el patrón observado en datos de referencia — no es una sola regla fija.
+        </p>
+        <PillarBreakdown breakdown={snapshot.scoreBreakdown} />
+      </section>
     </div>
   )
 }
 
-function Ratio({ icon, title, value, target, pass }) {
-  return (
-    <article className="k-card p-5">
-      <div className="k-icon-tile mb-3 h-11 w-11">{icon}</div>
-      <p className="text-sm font-bold text-slate-500">{title}</p>
-      <p className="mt-1 text-2xl font-bold text-slate-950">{value}</p>
-      <p className="mt-1 text-sm text-slate-500">{target}</p>
-      <span className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-bold ${pass ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'}`}>{pass ? 'En la guía' : 'Oportunidad'}</span>
-    </article>
-  )
+function PillarBreakdown({ breakdown }) {
+  const { subscores, weights } = breakdown
+  const rows = Object.keys(weights)
+    .sort((a, b) => weights[b] - weights[a])
+    .map((key) => [
+      PILLAR_META[key]?.label || key,
+      Math.round(subscores[key] ?? 0),
+      `${Math.round(weights[key])}%`,
+      pillarTier(subscores[key] ?? 0),
+    ])
+  return <StatementTable columns={['Área', 'Puntaje', 'Peso en el score', 'Estado']} rows={rows} />
 }
 
 function AnnualCard({ label, value }) {
@@ -141,19 +158,16 @@ function Benchmarks({ metrics }) {
     ['Deuda no hipotecaria / ingresos', `${Math.round(metrics.debtToIncome * 100)}%`, BENCHMARKS.debtToIncome.label, BENCHMARKS.debtToIncome.pass(metrics.debtToIncome)],
   ]
   return (
-    <article className="k-card p-5">
-      <h2 className="mb-4 font-bold text-slate-950">Comparación con guías recomendadas</h2>
-      <table className="w-full text-left text-sm">
-        <tbody>{rows.map(([metric, current, target, pass]) => (
-          <tr key={metric} className="border-t border-stone-100">
-            <td className="py-3 font-bold text-slate-700">{metric}</td>
-            <td>{current}</td>
-            <td>{target}</td>
-            <td className={pass ? 'text-emerald-700' : 'text-amber-700'}>{pass ? 'En la guía' : 'Oportunidad'}</td>
-          </tr>
-        ))}</tbody>
-      </table>
-    </article>
+    <StatementTable
+      title="Comparación con guías recomendadas"
+      columns={['Métrica', 'Actual', 'Guía', 'Estado']}
+      rows={rows.map(([metric, current, target, pass]) => [
+        metric,
+        current,
+        target,
+        <span key="status" className={pass ? 'text-emerald-700' : 'text-amber-700'}>{pass ? 'En la guía' : 'Oportunidad'}</span>,
+      ])}
+    />
   )
 }
 

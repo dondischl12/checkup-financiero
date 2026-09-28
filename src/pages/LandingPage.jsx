@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -10,6 +11,11 @@ import {
   ShieldCheck,
   UserRound,
 } from 'lucide-react'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+
+// Lazy: pulls in three.js/@react-three-fiber, so only the Landing route ever loads it,
+// and only when the visitor hasn't asked for reduced motion.
+const ShaderHero = lazy(() => import('../components/shared/ShaderHero'))
 
 const screenshot = (name) => `${import.meta.env.BASE_URL}docs/screenshots/${name}.png`
 
@@ -41,9 +47,16 @@ const capabilityRows = [
 ]
 
 export default function LandingPage() {
+  const prefersReducedMotion = usePrefersReducedMotion()
+
   return (
     <div className="space-y-16 md:space-y-20">
-      <section className="grid min-h-[calc(100dvh-8rem)] min-w-0 gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+      <section className="relative grid min-h-[calc(100dvh-8rem)] min-w-0 gap-8 overflow-hidden rounded-2xl lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+        {!prefersReducedMotion && (
+          <Suspense fallback={null}>
+            <ShaderHero className="absolute inset-0 -z-10 opacity-40" />
+          </Suspense>
+        )}
         <div className="min-w-0 py-4">
           <p className="k-eyebrow">Bienestar financiero, sin fricción</p>
           <h1 className="k-display mt-5 max-w-xl text-4xl leading-[1.04] sm:text-5xl md:text-6xl xl:text-[4.65rem]">

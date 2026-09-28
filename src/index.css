@@ -257,6 +257,14 @@
     @apply focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-100;
   }
 
+  /* Statement-style report shell (Snapshot / Análisis only) — ruled borders and tabular
+     figures inspired by a financial statement layout, kept to the report pages so the
+     rest of the product keeps its softer "organic" look. */
+  .k-statement {
+    @apply rounded-lg border bg-white;
+    border-color: var(--katalyst-line);
+  }
+
   .k-landscape {
     @apply pointer-events-none absolute inset-x-0 bottom-0 overflow-hidden;
     height: 58%;
@@ -282,15 +290,5 @@
     left: 10%;
     height: 58%;
     background: linear-gradient(180deg, rgba(116, 142, 114, 0.16), rgba(116, 142, 114, 0.28));
-  }
-
-  .k-score-ring {
-    display: grid;
-    place-items: center;
-    border-radius: 999px;
-    --score-deg: 245deg;
-    background:
-      radial-gradient(circle at center, white 0 58%, transparent 59%),
-      conic-gradient(from -115deg, var(--katalyst-sage-strong) 0deg var(--score-deg), #edf1e8 var(--score-deg) 360deg);
   }
 }

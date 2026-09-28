@@ -1,3 +1,5 @@
+import { PILLAR_WEIGHTS } from '../data/scoreModelWeights.js'
+
 const annualKeywords = ['_annual', 'annual_or_one_time']
 
 const expenseGroups = {
@@ -218,9 +220,9 @@ function scoreCurve(value, points) {
 /**
  * Pillar subscores (0-100) for the Katalyst FinHealth model.
  *
- * Weights and pillars follow the Financial Health Network's FinHealth Score
- * framework (Spend / Save / Borrow / Plan & Protect), grounded in widely used
- * planning benchmarks:
+ * Pillars follow the Financial Health Network's FinHealth Score framework
+ * (Spend / Save / Borrow / Plan & Protect), grounded in widely used planning
+ * benchmarks:
  *   - 50/30/20 budget: keep >=20% of income for savings/debt paydown.
  *   - Savings rate 15-20% is the healthy planning target.
  *   - Emergency fund: 3-6 months of essential expenses.
@@ -228,12 +230,29 @@ function scoreCurve(value, points) {
  *   - 20/10 rule: non-mortgage consumer debt payments <=10-20% of income.
  * Subjective/behavioral indicators (stress, tracking, resilience) reflect the
  * FHN "Plan" pillar and CFPB Financial Well-Being work.
+ *
+ * This returns the 8 raw pillar scores only — no weighting. Combining them into
+ * a single score is `calculateScoreBreakdown()` below, which uses weights learned
+ * offline from synthetic training data (see `src/data/scoreModelWeights.js` and
+ * `scripts/train-score-weights.mjs`) instead of hand-picked numbers.
  */
-export function calculateScoreBreakdown(answers = {}) {
+export function calculatePillarScores(answers = {}) {
   const metrics = calculateDerivedMetrics(answers)
   const hasIncome = metrics.monthlyIncome > 0
+  const noDependents = metrics.dependents === 0
+  const hasDebt = metrics.debtPayments > 0 || metrics.debtTotal > 0
 
-  // --- Pillar 1: Cash flow & savings (Spend less than income + Save) ---
+  // --- Estabilidad de ingreso ---
+  const incomeStability = hasIncome
+    ? optionScore(answers.income_stability, {
+        'Muy estable': 100,
+        'Algo variable': 72,
+        'Muy variable': 45,
+        'No tengo ingreso propio actualmente': 18,
+      })
+    : 15
+
+  // --- Disciplina de gasto (ahorro + margen de flujo neto) ---
   // Savings rate anchored to the 20% target of the 50/30/20 rule.
   const savingsRateScore = scoreCurve(metrics.savingsRate, [
     [0, 20],
@@ -253,17 +272,9 @@ export function calculateScoreBreakdown(answers = {}) {
     [0.2, 95],
     [0.3, 100],
   ])
-  const stability = optionScore(answers.income_stability, {
-    'Muy estable': 100,
-    'Algo variable': 72,
-    'Muy variable': 45,
-    'No tengo ingreso propio actualmente': 18,
-  })
-  const cashFlow = hasIncome
-    ? (netFlowScore * 0.55 + savingsRateScore * 0.45) * 0.8 + stability * 0.2
-    : 15
+  const spendingDiscipline = hasIncome ? netFlowScore * 0.55 + savingsRateScore * 0.45 : 15
 
-  // --- Pillar 2: Expense structure (28/36 + 50/30/20) ---
+  // --- Estructura de gasto (28/36 + 50/30/20) ---
   const housingScore = scoreCurve(metrics.housingRatio, [
     [0, 100],
     [0.25, 100],
@@ -281,10 +292,10 @@ export function calculateScoreBreakdown(answers = {}) {
     [1.15, 15],
     [1.3, 0],
   ])
-  const structure = hasIncome ? housingScore * 0.45 + expenseScore * 0.55 : 25
+  const expenseStructure = hasIncome ? housingScore * 0.45 + expenseScore * 0.55 : 25
 
-  // --- Pillar 3: Emergency fund (3-6 months of essential expenses) ---
-  const emergency = scoreCurve(metrics.emergencyMonths, [
+  // --- Fondo de emergencia (3-6 meses de gastos esenciales) ---
+  const emergencyFund = scoreCurve(metrics.emergencyMonths, [
     [0, 5],
     [1, 35],
     [2, 55],
@@ -293,8 +304,7 @@ export function calculateScoreBreakdown(answers = {}) {
     [6, 100],
   ])
 
-  // --- Pillar 4: Debt burden (28/36 back-end + 20/10 rule + subjective) ---
-  const hasDebt = metrics.debtPayments > 0 || metrics.debtTotal > 0
+  // --- Carga de deuda (28/36 back-end + regla 20/10 + subjetivo) ---
   const debtRatioScore = scoreCurve(metrics.debtToIncome, [
     [0, 100],
     [0.1, 92],
@@ -309,16 +319,13 @@ export function calculateScoreBreakdown(answers = {}) {
     'Me cuesta trabajo': 42,
     'No puedo cubrirlos todos': 12,
   }, hasDebt ? 55 : 100)
-  const debt = hasDebt ? debtRatioScore * 0.6 + debtStress * 0.4 : 100
+  const debtBurden = hasDebt ? debtRatioScore * 0.6 + debtStress * 0.4 : 100
 
-  // --- Pillar 5: Protection & planning (insurance + long-term assets) ---
-  const noDependents = metrics.dependents === 0
-  const protection = clamp([
-    toNumber(answers.expense_health_insurance_monthly) > 0 ? 25 : 0,
+  // --- Cobertura de seguros ---
+  const insuranceCoverage = clamp([
+    toNumber(answers.expense_health_insurance_monthly) > 0 ? 45 : 0,
     // Life insurance only matters when someone depends on this income.
-    toNumber(answers.expense_life_insurance_monthly) > 0 || noDependents ? 20 : 0,
-    toNumber(answers.retirement_savings_total) > 0 ? 20 : 0,
-    toNumber(answers.investment_total) > 0 ? 15 : 0,
+    toNumber(answers.expense_life_insurance_monthly) > 0 || noDependents ? 35 : 0,
     optionScore(answers.coverage_confidence, {
       'Sí, suficiente': 20,
       Parcialmente: 12,
@@ -327,8 +334,14 @@ export function calculateScoreBreakdown(answers = {}) {
     }, 8),
   ].reduce((sum, item) => sum + item, 0))
 
-  // --- Pillar 6: Habits & wellbeing (bill/plan discipline + resilience) ---
-  const habits = [
+  // --- Patrimonio de largo plazo (retiro + inversión) ---
+  const longTermAssets = clamp([
+    toNumber(answers.retirement_savings_total) > 0 ? 55 : 0,
+    toNumber(answers.investment_total) > 0 ? 45 : 0,
+  ].reduce((sum, item) => sum + item, 0))
+
+  // --- Hábitos y bienestar (disciplina de plan + resiliencia) ---
+  const habitsWellbeing = [
     optionScore(answers.budget_tracking_frequency, { Semanalmente: 100, Mensualmente: 85, 'De vez en cuando': 55, 'Casi nunca': 20 }, 55),
     optionScore(answers.statement_reconcile, { 'Sí, cada mes': 100, 'A veces': 65, 'No todavía': 25 }, 55),
     optionScore(answers.financial_stress, {
@@ -347,29 +360,43 @@ export function calculateScoreBreakdown(answers = {}) {
     }, 65),
   ].reduce((sum, item) => sum + item, 0) / 5
 
-  const subscores = {
-    cashFlow: clamp(cashFlow),
-    expenseStructure: clamp(structure),
-    emergencyFund: clamp(emergency),
-    debtBurden: clamp(debt),
-    protectionPlanning: clamp(protection),
-    habitsWellbeing: clamp(habits),
+  return {
+    incomeStability: clamp(incomeStability),
+    spendingDiscipline: clamp(spendingDiscipline),
+    expenseStructure: clamp(expenseStructure),
+    emergencyFund: clamp(emergencyFund),
+    debtBurden: clamp(debtBurden),
+    insuranceCoverage: clamp(insuranceCoverage),
+    longTermAssets: clamp(longTermAssets),
+    habitsWellbeing: clamp(habitsWellbeing),
   }
+}
 
-  // FinHealth pillar weights (sum = 100). Round only once, on the total.
-  const weights = {
-    cashFlow: 25,
-    expenseStructure: 20,
-    emergencyFund: 20,
-    debtBurden: 15,
-    protectionPlanning: 10,
-    habitsWellbeing: 10,
-  }
+// Labels + short constructive descriptor for each pillar — used to render the
+// breakdown in the report. Never "bien/mal": three neutral tiers only.
+export const PILLAR_META = {
+  incomeStability: { label: 'Estabilidad de ingreso', copy: 'Qué tan predecible es su ingreso mes a mes.' },
+  spendingDiscipline: { label: 'Disciplina de gasto', copy: 'Relación entre lo que entra y lo que sale cada mes.' },
+  expenseStructure: { label: 'Estructura de gastos', copy: 'Vivienda y gasto total frente a guías recomendadas.' },
+  emergencyFund: { label: 'Fondo de emergencia', copy: 'Meses de gastos esenciales cubiertos con ahorro líquido.' },
+  debtBurden: { label: 'Carga de deuda', copy: 'Peso de los pagos de deuda sobre el ingreso.' },
+  insuranceCoverage: { label: 'Cobertura de seguros', copy: 'Protección de salud y vida frente a imprevistos.' },
+  longTermAssets: { label: 'Patrimonio de largo plazo', copy: 'Avance en retiro e inversión.' },
+  habitsWellbeing: { label: 'Hábitos y bienestar', copy: 'Seguimiento del presupuesto y resiliencia ante imprevistos.' },
+}
+
+export function pillarTier(value) {
+  if (value >= 75) return 'Fortaleza'
+  if (value >= 50) return 'En desarrollo'
+  return 'Oportunidad de enfoque'
+}
+
+export function calculateScoreBreakdown(answers = {}) {
+  const subscores = calculatePillarScores(answers)
   const total = clamp(
-    Object.entries(weights).reduce((sum, [key, weight]) => sum + (subscores[key] * weight) / 100, 0),
+    Object.entries(PILLAR_WEIGHTS).reduce((sum, [key, weight]) => sum + (subscores[key] ?? 0) * weight / 100, 0),
   )
-
-  return { score: Math.round(total), subscores, weights }
+  return { score: Math.round(total), subscores, weights: PILLAR_WEIGHTS }
 }
 
 export function calculateScore(answers = {}) {

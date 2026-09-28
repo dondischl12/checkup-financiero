@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { BarChart3, BookOpen, ClipboardCheck, Home, UserRound } from 'lucide-react'
+import { useLenis } from '../../hooks/useLenis'
 
 const navItems = [
   { to: '/', label: 'Inicio', icon: Home },
@@ -9,6 +10,7 @@ const navItems = [
 ]
 
 export default function Layout() {
+  useLenis()
   const linkClass = ({ isActive }) =>
     `flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold transition-colors ${
       isActive ? 'bg-[#071832] text-white shadow-sm' : 'text-slate-600 hover:bg-stone-100 hover:text-slate-950'

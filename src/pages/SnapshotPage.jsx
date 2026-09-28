@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { ArrowRight, Bookmark, Download, LockKeyhole, MessageCircle, ShieldCheck, TrendingUp, UserRound } from 'lucide-react'
+import { ArrowRight, Bookmark, Download, LockKeyhole, MessageCircle, TrendingUp, UserRound } from 'lucide-react'
 import { learningModules } from '../data/learningModules'
 import { liveModuleIds } from '../data/learningContent'
 import { betaPrivacyCopy, betaPrivacyFootnote, betaReviewCopy } from '../lib/betaCopy'
 import { getLastSnapshot, getSnapshotHistory } from '../utils/storage'
+import ScoreGauge from '../components/shared/ScoreGauge'
+import StatementHeader from '../components/shared/StatementHeader'
+import StatementSummaryGrid from '../components/shared/StatementSummaryGrid'
 
 const money = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })
 
@@ -33,16 +36,19 @@ export default function SnapshotPage() {
 
   return (
     <div id="snapshot-report" className="k-page k-scenic-page">
-      <section className="k-scenic-hero grid gap-6 p-6 lg:grid-cols-[1fr_380px] lg:items-end">
-        <div>
-          <p className="k-eyebrow flex items-center gap-2">
-            <ShieldCheck size={18} /> Snapshot completado / {new Date(snapshot.createdAt).toLocaleDateString('es-MX')}
-          </p>
-          <h1 className="k-display mt-3 text-3xl leading-tight sm:text-4xl md:text-5xl lg:text-6xl">Su snapshot financiero</h1>
-          <p className="k-copy mt-3 max-w-2xl text-lg">
-            Un resumen privado y accionable de su situación financiera. Úselo para tomar mejores decisiones y avanzar con claridad.
-          </p>
-        </div>
+      <StatementHeader
+        title="Su snapshot financiero"
+        meta={[
+          ['Fecha', new Date(snapshot.createdAt).toLocaleDateString('es-MX')],
+          ['Snapshot', snapshotRef(snapshot.createdAt)],
+          ['Moneda', snapshot.currency || 'MXN'],
+        ]}
+      />
+
+      <section className="grid gap-4 lg:grid-cols-[1fr_340px] lg:items-start">
+        <p className="k-copy text-lg">
+          Un resumen privado y accionable de su situación financiera. Úselo para tomar mejores decisiones y avanzar con claridad.
+        </p>
         <div className="k-soft-card p-5">
           <div className="flex gap-3">
             <LockKeyhole className="shrink-0 text-emerald-700" />
@@ -59,8 +65,7 @@ export default function SnapshotPage() {
         <article className="k-shell relative grid min-h-[340px] gap-6 overflow-hidden p-7 md:grid-cols-[0.9fr_0.75fr]">
           <div className="k-landscape opacity-30" />
           <div className="flex flex-col items-center justify-center text-center">
-            <ScoreRing score={snapshot.score} hasData={hasData} />
-            <p className="mt-4 text-lg font-bold text-emerald-800">{hasData ? snapshot.level.label : 'Aún sin datos'}</p>
+            <ScoreGauge score={snapshot.score} hasData={hasData} className="w-64 sm:w-72" />
             <p className="mt-4 max-w-md leading-7 text-slate-600">
               {hasData ? snapshot.level.summary : 'Complete sus números en el checkup para generar su resultado y sus recomendaciones.'}
             </p>
@@ -93,15 +98,17 @@ export default function SnapshotPage() {
         </ChartCard>
       </section>
 
-      <section className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6">
-        <h2 className="mb-4 font-bold text-emerald-900">Resumen del mes</h2>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-          <Metric title="Ingresos mensuales" value={money.format(metrics.monthlyIncome)} label="por mes" />
-          <Metric title="Gastos mensuales" value={money.format(metrics.monthlyExpenses)} label={pctOfIncome(metrics.expenseRatio)} />
-          <Metric title="Ahorro mensual" value={money.format(metrics.monthlySavings)} label={hasIncome ? `${Math.round(metrics.savingsRate * 100)}% del ingreso` : 'por mes'} />
-          <Metric title="Deuda total" value={money.format(metrics.debtTotal)} label={hasIncome ? `${Math.round(metrics.debtToIncome * 100)}% del ingreso en pagos` : 'por mes'} />
-          <Metric title="Fondo de emergencia" value={money.format(metrics.emergencyFund)} label={`${metrics.emergencyMonths.toFixed(1)} meses de gastos`} />
-        </div>
+      <section>
+        <h2 className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">Resumen del mes</h2>
+        <StatementSummaryGrid
+          items={[
+            { label: 'Ingresos mensuales', value: money.format(metrics.monthlyIncome), note: 'por mes' },
+            { label: 'Gastos mensuales', value: money.format(metrics.monthlyExpenses), note: pctOfIncome(metrics.expenseRatio) },
+            { label: 'Ahorro mensual', value: money.format(metrics.monthlySavings), note: hasIncome ? `${Math.round(metrics.savingsRate * 100)}% del ingreso` : 'por mes' },
+            { label: 'Deuda total', value: money.format(metrics.debtTotal), note: hasIncome ? `${Math.round(metrics.debtToIncome * 100)}% del ingreso en pagos` : 'por mes' },
+            { label: 'Fondo de emergencia', value: money.format(metrics.emergencyFund), note: `${metrics.emergencyMonths.toFixed(1)} meses de gastos` },
+          ]}
+        />
       </section>
 
       <section className="grid gap-4 rounded-2xl border border-sky-100 bg-sky-50 p-6 lg:grid-cols-[0.8fr_1.2fr]">
@@ -217,18 +224,6 @@ async function downloadPdf(snapshot, history) {
   exportSnapshotPdf(snapshot, history)
 }
 
-function ScoreRing({ score, hasData = true }) {
-  const degrees = `${Math.round((Math.max(0, Math.min(100, score)) / 100) * 360)}deg`
-  return (
-    <div className="k-score-ring h-52 w-52 sm:h-64 sm:w-64" style={{ '--score-deg': hasData ? degrees : '0deg' }}>
-      <div>
-        <p className="text-6xl font-bold text-slate-950 sm:text-7xl">{hasData ? score : '—'}</p>
-        <p className="text-lg font-bold text-slate-500">/100</p>
-      </div>
-    </div>
-  )
-}
-
 function Insight({ icon, title, value, copy }) {
   return (
     <div className="flex gap-4">
@@ -251,16 +246,6 @@ const iconTileTones = {
 function IconTile({ children, tone }) {
   const toneClass = tone ? iconTileTones[tone] : ''
   return <span className={`k-icon-tile ${toneClass}`}>{children}</span>
-}
-
-function Metric({ title, value, label }) {
-  return (
-    <article className="k-card p-5">
-      <p className="text-sm font-bold text-slate-500">{title}</p>
-      <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
-      <span className="mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">{label}</span>
-    </article>
-  )
 }
 
 function MiniMetric({ label, value }) {
@@ -309,4 +294,10 @@ function buildTrend(history) {
     month: new Date(item.createdAt).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' }),
     score: item.score,
   }))
+}
+
+// Short, non-identifying reference for the statement header — derived from the
+// snapshot timestamp only, never from anything a person could be recognized by.
+function snapshotRef(createdAt) {
+  return new Date(createdAt).getTime().toString(36).toUpperCase().slice(-6)
 }
